@@ -39,7 +39,6 @@ public class Controller {
 		String result = usuarioMapper.insertUsuario(name, pass);
 		//conn.close();
 		return result;
-		//ack = new Login(result, null);
 	}
 	
 	/**
