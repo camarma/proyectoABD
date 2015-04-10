@@ -54,7 +54,6 @@ public class PanelCrucigramas extends JPanel{
 		s_ctrl = new Controller();
 		m_Dialog = new MessageDialog();
 		listaCrucigramasActvos = s_ctrl.listarCrucigramasActivos(nameUsuario);
-		System.out.println(listaCrucigramasActvos);
 		build();
 	}
 		
@@ -101,7 +100,7 @@ public class PanelCrucigramas extends JPanel{
 				}else{
 					String valor =String.valueOf(tbCrucigrama.getValueAt(tbCrucigrama.getSelectedRow(),0));
 					ArrayList<Palabra> listWord = s_ctrl.listaPalabrasByCrucigrama(valor);
-					cp = new CrosswordPanelMio(listWord);
+					cp = new CrosswordPanelMio(listWord, nameUsuario, valor);
 				}
 			}
 		});

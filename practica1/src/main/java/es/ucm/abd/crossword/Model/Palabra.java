@@ -79,6 +79,14 @@ public class Palabra {
 	public String getOrientacion() {
 		return orientacion;
 	}
+	
+	public void setId(int id){
+		this.id = id;
+	}
+	
+	public int getId() {
+		return id;
+	}
 
 	public String toString() {
 		return "Palabra [id=" + id + ", Secuencia=" + secuencia + ", Enunciado="
