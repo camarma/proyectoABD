@@ -1,6 +1,7 @@
 package es.ucm.abd.crossword.Controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.sql.DataSource;
 
@@ -96,6 +97,66 @@ public class Controller {
 		//System.out.println(listaPalabras.get(0).getPosx());
 		return listaPalabras;
 	}
+	//Alberto
+	public ArrayList<String> performFindFriends(String filter, String nameUser){
+		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
+		ArrayList<String> listaUsuarios = usuarioMapper.getUsuariosByfilter(filter, nameUser);
+		return listaUsuarios;		
+	}
+	//Alberto
+	public String performAsignarAmistad(String nameUser, String nameAmigo){
+		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
+		String ack = usuarioMapper.asignarAmistad(nameUser,nameAmigo);
+		return ack;		
+	}
+	//Alberto
+	public ArrayList<String> performListarAmigosDe(String userName){
+		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
+		ArrayList<String> listaUsuarios = usuarioMapper.getAmigosDe(userName);
+		return listaUsuarios;		
+	}
+	//ALberto
+	public String performEliminarAmistad(String nameUser, String nameAmigo){
+		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
+		String ack = usuarioMapper.EliminarAmistad(nameUser,nameAmigo);
+		return ack;		
+	}
 	
+	//ALberto
+	public String performModificarDatos(String name,String pass,Date edad){
+		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
+		String ack="";
+		boolean edadOK = false;
+		boolean passOK = false;
+		if(!pass.equals("")){
+			ack = usuarioMapper.updatePassword(name, pass);
+			if(ack.split(":")[0].equals("true")){
+				passOK=true;
+			}
+		}
+		if(edad != null){
+			ack = usuarioMapper.updateEdad(name, edad);
+			if(ack.split(":")[0].equals("true")){
+				edadOK=true;
+			}
+		}
+		if(passOK && edadOK){
+			ack = "true:"+name+" tu datos se han cambiado correctamente";
+		}	
+		return ack;
+	}
+	
+	//George
+	 public void insertarRespuesta(String nameUsuario, String tituloCruci, int idPalabra, String respuesta, boolean correcto, String fecha) {
+	 // TODO Auto-generated method stub
+		 UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
+		 usuarioMapper.addRespuesta(nameUsuario, tituloCruci, idPalabra, respuesta, correcto, fecha);
+	 }
 
+	 public ArrayList<String> cargarRespuestas(String nameUsuario, String tituloCruci) {
+	 // TODO Auto-generated method stub
+		 UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
+		 ArrayList<String> respuestasCorrectas = usuarioMapper.getRespuestasCorrectas(nameUsuario, tituloCruci);
+		 return respuestasCorrectas;
+	 }
 }

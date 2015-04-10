@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.sql.DataSource;
@@ -158,7 +159,7 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 			pst.setObject(2,nombre);
 			try {
 				pst.executeUpdate();
-				return mensaje = "true:Contraseña restaurada de "+nombre;
+				return mensaje = "true:"+nombre+" tu contraseña ha sido restaurada correctamente.";
 			} catch (Exception e) {
 				return mensaje = "false:Contraseña no restaurada";
 			}
@@ -200,5 +201,205 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 			return mensaje;
 		}
 	}
+	
+	//Alberto
+	public ArrayList<String> getUsuariosByfilter(String filter, String nameUser){
+		String tableName = getTableName();
+		ArrayList<String> nameUsers = new ArrayList<String>();
+		String sql = "SELECT `Nombre` FROM "+tableName+" WHERE `Nombre` LIKE '%' ? '%' AND `Nombre` != ?";
+		try (Connection con = ds.getConnection();
+			 PreparedStatement pst = con.prepareStatement(sql)) {
+			
+			pst.setObject(1, filter);
+			pst.setObject(2, nameUser);
+			
+			try(ResultSet rs = pst.executeQuery()) {
+				while (rs.next()) {
+					nameUsers.add(rs.getString("Nombre"));
+				} 
+				return nameUsers;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	//Alberto
+	public String asignarAmistad(String nameUsr, String nameAmigo) {
+		String mensaje="false:Error base de datos";
+		String tableName = "amigo_de";
+		Integer IdUser = getIdByName(nameUsr,getTableName(),"Nombre");
+		Integer IdAmigo = getIdByName(nameAmigo,getTableName(),"Nombre");
+		String sql = "INSERT INTO " +tableName+ " (`Id_usuario`, `Id_usuario_amigo`) VALUES (?,?)";
+		
+		try (Connection con = ds.getConnection();
+			 PreparedStatement pst = con.prepareStatement(sql)) {
+				pst.setObject(1,IdUser);
+				pst.setObject(2,IdAmigo);
+			try {
+				pst.executeUpdate();
+				return mensaje = "true";
+			} catch (Exception e) {
+				return mensaje = "false:El usuario "+nameAmigo+" ya esta en tu lista de amigos.";
+			}
+				
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return mensaje;
+		}
+	}
+	
+	//Alberto
+	public ArrayList<Integer> getIdsAmigosDe(Integer idUsr) {
+		String tableName = "amigo_de";
+		ArrayList<Integer> listIdsAmigos = new ArrayList<Integer>();
+		String sql = "SELECT `Id_usuario_amigo` FROM "+tableName+" WHERE `Id_usuario`= ?";
+		try (Connection con = ds.getConnection();
+			 PreparedStatement pst = con.prepareStatement(sql)) {
+			
+			pst.setObject(1, idUsr);
+			
+			try(ResultSet rs = pst.executeQuery()) {
+				while (rs.next()) {
+					listIdsAmigos.add(rs.getInt("Id_usuario_amigo"));
+				} 
+				return listIdsAmigos;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	//Alberto
+	public ArrayList<String> getAmigosDe(String nameUsr) {
+		String tableName = getTableName();
+		Integer idUser = getIdByName(nameUsr,tableName,"Nombre");
+		ArrayList<String> listAmigosDe = new ArrayList<String>();
+		ArrayList<Integer> listIdsAmigos = getIdsAmigosDe(idUser);
+		for(int i=0; i<listIdsAmigos.size();i++){
+			String sql = "SELECT `Nombre` FROM "+tableName+" WHERE `Id`= ?";
+			try (Connection con = ds.getConnection();
+				 PreparedStatement pst = con.prepareStatement(sql)) {
+				
+				pst.setObject(1, listIdsAmigos.get(i));
+				
+				try(ResultSet rs = pst.executeQuery()) {
+					while (rs.next()) {
+						listAmigosDe.add(rs.getString("Nombre"));
+					} 
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return listAmigosDe;
+	}
+	
+	//Alberto
+	public String EliminarAmistad(String nameUsr, String nameAmigo) {
+		String mensaje="false:Error base de datos";
+		String tableName = "amigo_de";
+		Integer IdUser = getIdByName(nameUsr,getTableName(),"Nombre");
+		Integer IdAmigo = getIdByName(nameAmigo,getTableName(),"Nombre");
+		String sql = "DELETE FROM " +tableName+ " WHERE `Id_usuario`= ? AND `Id_usuario_amigo`= ?";
+		
+		try (Connection con = ds.getConnection();
+			 PreparedStatement pst = con.prepareStatement(sql)) {
+				pst.setObject(1,IdUser);
+				pst.setObject(2,IdAmigo);
+			try {
+				pst.executeUpdate();
+				return mensaje = "true";
+			} catch (Exception e) {
+				return mensaje = "false:Error al eliminar amigo";
+			}
+				
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return mensaje;
+		}
+	}
+	
+	//Alberto updateUser
+	public String updateEdad(String nombre, Date edad) {
+		String mensaje="false:Error base de datos";
+		String tableName = getTableName();
+		String sql = "UPDATE "+ tableName + " SET `Fecha_nacimiento`=? WHERE `Nombre`=?";
+		
+		try (Connection con = ds.getConnection();
+			 PreparedStatement pst = con.prepareStatement(sql)) {
+			
+			pst.setObject(1,edad);
+			pst.setObject(2,nombre);
+			try {
+				pst.executeUpdate();
+				return mensaje = "true:"+nombre+" tu fecha de nacimiento ha sido restaurada correctamente.";
+			} catch (Exception e) {
+				return mensaje = "false:Contraseña no restaurada";
+			}
+				
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return mensaje;
+		}
+	}
+	
+	//george
+	 public String addRespuesta(String nameUsuario, String tituloCruci, int IdPalabra, String respuesta, boolean correcto, String fecha) {
+	 // TODO Auto-generated method stub
+		 String mensaje="false:Error base de datos";
+		 String tableName = "historial";
+		 Integer IdUser = getIdByName(nameUsuario,getTableName(),"Nombre");
+		 Integer IdCruci = getIdByName(tituloCruci,"crucigramas","Titulo");
+		 String sql = "INSERT INTO " +tableName+ " (`Id_usuario`, `Id_crucigrama`, `Id_palabra` , `Fecha_respuesta` , `Respuesta` , `Id_usuario_responde` , `Correcto`) VALUES (?,?,?,?,?,?,?)";
+		 
+		 try (Connection con = ds.getConnection();
+			 PreparedStatement pst = con.prepareStatement(sql)) {
+			 pst.setObject(1,IdUser);
+			 pst.setObject(2,IdCruci);
+			 pst.setObject(3,IdPalabra);
+			 pst.setObject(4,fecha);
+			 pst.setObject(5,respuesta);
+			 pst.setObject(6,IdUser);
+			 pst.setObject(7,correcto);
+			 try {
+				 pst.executeUpdate();
+				 return mensaje = "true";
+			 } catch (Exception e) {
+				 return mensaje = "false:Error al asignar nuevo crucigrama añadido";
+			 }
+		 
+		 } catch (SQLException e) {
+			 e.printStackTrace();
+			 return mensaje;
+		 }
+	 }
+
+	 public ArrayList<String> getRespuestasCorrectas(String nameUsuario, String tituloCruci) {
+		 String tableName = "historial";
+		 Integer IdUser = getIdByName(nameUsuario,getTableName(),"Nombre");
+		 Integer IdCruci = getIdByName(tituloCruci,"crucigramas","Titulo");
+		 ArrayList<String> respuestasCorrectas = new ArrayList<String>();
+		 String sql = "SELECT `Respuesta` FROM "+ tableName + " WHERE `Id_usuario`=? AND `Id_crucigrama`=? AND `Correcto`=1";
+		 
+		 try (Connection con = ds.getConnection();
+		     PreparedStatement pst = con.prepareStatement(sql)) {
+			 pst.setObject(1, IdUser);
+			 pst.setObject(2, IdCruci);
+		 
+			 try(ResultSet rs = pst.executeQuery()) {
+				 while (rs.next()) {
+					 respuestasCorrectas.add(rs.getString("Respuesta"));
+				 }
+				 return respuestasCorrectas;
+			 }
+			 } catch (SQLException e) {
+				 e.printStackTrace();
+				 return null;
+			 }
+	 }
 }
 

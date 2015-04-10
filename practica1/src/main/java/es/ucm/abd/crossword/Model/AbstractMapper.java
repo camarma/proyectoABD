@@ -66,7 +66,7 @@ public abstract class AbstractMapper<T, K> {
 	 * @param nick -> nombre de usuario
 	 * @return el id, y null en cc
 	 */
-	public Integer getIdByName(String nick, String tablename, String columName){
+	public Integer getIdByName(Object nick, String tablename, String columName){
 		String sql = "SELECT `Id` FROM "+ tablename+" WHERE "+columName+" =?";
 		try (Connection con = ds.getConnection();
 				 PreparedStatement pst = con.prepareStatement(sql)) {
