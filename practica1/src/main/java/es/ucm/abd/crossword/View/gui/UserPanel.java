@@ -41,13 +41,20 @@ public class UserPanel  extends JPanel{
 	private JLabel lblPassMod;
 	private JLabel lblPassNew;
 	private JLabel lblPassRep;
-	private JLabel lblEdadMod;
+	protected JLabel lblEdadMod;
 	private JLabel lblName;
 	private JTextField txtPassNew;
 	private JTextField txtPassRep;
 	private JTextField txtEdadMod;
 	private Controller s_ctrl;
 	private MessageDialog messageDialog;
+	private JButton btnCalendar;
+	private PanelCalendar pc;
+	private static String fechaNueva ="";
+	private boolean tieneFecha=false;
+	private String fecha;
+	private JButton btnAvatar;
+	private JLabel lblAvatar;
 	
 	/**
 	 * Constructora para inicializar el toolbar panel con sus botones y llamar al metodo build
@@ -57,7 +64,14 @@ public class UserPanel  extends JPanel{
 		this.s_ctrl = new Controller();
 		this.messageDialog = new MessageDialog();
 		this.usuario = data;
+		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+		if(usuario.getFechaNacimiento()!=null)
+			tieneFecha = true;
+			//fechaNueva = formato.format(usuario.getFechaNacimiento());
+			
 		build();
+	}
+	public UserPanel(){
 	}
 	
 	/**
@@ -117,7 +131,7 @@ public class UserPanel  extends JPanel{
 		if (mes < 0) {
 			anos = anos - 1;
 		} else if (mes == 0) {
-			int dia = Integer.parseInt(dat2[3]) - Integer.parseInt(dat1[3]);
+			int dia = Integer.parseInt(dat2[2]) - Integer.parseInt(dat1[2]);
 			if (dia > 0) {
 				anos = anos - 1;
 			}
@@ -138,23 +152,29 @@ public class UserPanel  extends JPanel{
 	}
 	
 	 private void ventanaEditar(){
+		JPanel panelCalendar = new JPanel();
+		JPanel panelAvatar = new JPanel();
 		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
 		ventana = new JFrame("Editar datos");
 		//JPanel centerPanel = new JPanel();
-		JPanel datos = new JPanel(new GridLayout(5,0));	
-		JPanel botones = new JPanel();
+		JPanel datos = new JPanel(new GridLayout(6,0));	
+		//JPanel botones = new JPanel();
 		
 		lblNameMod = new JLabel("Nombre:");
 		lblPassMod = new JLabel("Contraseña:");
 		lblPassNew = new JLabel("Nueva contraseña:");
 		lblPassRep = new JLabel("Repetir contraseña:");
 		lblEdadMod = new JLabel("Fecha de nacimiento:");
+		lblAvatar = new JLabel("Avatar:");
 		btnModificar = new JButton("Modificar");
 		btnCancelar = new JButton("Cancelar");
+		btnCalendar = new JButton(new ImageIcon(Login.class.getResource("img/calendar.png")));
+		btnCalendar.setPreferredSize(new Dimension(30, 30));
+		btnAvatar = new JButton(new ImageIcon(Login.class.getResource("img/addAvatar.png")));
+		btnAvatar.setPreferredSize(new Dimension(30, 30));
 		lblName = new JLabel(usuario.getNombre());
 		txtPassNew = new JPasswordField();
 		txtPassRep = new JPasswordField();
-		txtEdadMod = new JTextField(formato.format(usuario.getFechaNacimiento()));
 			
 		datos.add(lblNameMod);
 		datos.add(lblName);
@@ -163,14 +183,20 @@ public class UserPanel  extends JPanel{
 		datos.add(lblPassRep);
 		datos.add(txtPassRep);
 		datos.add(lblEdadMod);
-		datos.add(txtEdadMod);
-		datos.add(btnModificar);
+		
+		panelCalendar.add(btnCalendar);
+		datos.add(panelCalendar,BorderLayout.WEST);
+		datos.add(lblAvatar);
+		panelAvatar.add(btnAvatar);
+		datos.add(panelAvatar,BorderLayout.WEST);
 		datos.add(btnCancelar);
+		datos.add(btnModificar);
+		
 		modificar();
 		cancelar();
+		calendario();
 		ventana.add(datos,BorderLayout.CENTER);
-		ventana.add(botones,BorderLayout.SOUTH);
-		ventana.setSize(400, 200);
+		ventana.setSize(500, 280);
 		ventana.setVisible(true);
 	}
 	 
@@ -179,82 +205,46 @@ public class UserPanel  extends JPanel{
 			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
 			private String pass="";
 			private Date edad = null;
-			private boolean passNOOK = false;
+			private String ack="";
+			private boolean passOK = false;
+			private boolean fechaOK = false;
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if((txtPassNew.getText().equals("") || txtEdadMod.getText().equals(formato.format(usuario.getFechaNacimiento()))) && (txtEdadMod.getText().equals("") && txtPassRep.getText().equals(""))){
+				if(txtPassNew.getText().equals("") && txtPassRep.getText().equals("") && fechaNueva.equals("") && tieneFecha){
 					ventana.dispose();
 				}else{
-					if(txtPassNew.getText().equals(txtPassRep.getText())){
-						pass = txtPassNew.getText();
-						passNOOK = false;
-					}else{
-						passNOOK = true;
-						messageDialog.reportMessage("false:Las contraseñas no coinciden");
-					}
-					if(!txtEdadMod.getText().equals(formato.format(usuario.getFechaNacimiento()))){
-						if(validaFormato(txtEdadMod.getText())){
-							try {
-								edad = formato.parse(txtEdadMod.getText());
-								passNOOK = false;
-							} catch (ParseException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
+					if(!txtPassNew.getText().equals("") && !txtPassRep.getText().equals("")){
+						if(!validaPass(txtPassNew.getText(),txtPassRep.getText())){
+							passOK = false;
+							messageDialog.reportMessage("false:Las contraseñas no coinciden.");
 						}else{
-							passNOOK = true;
-							messageDialog.reportMessage("false:El formato de la fecha es incorrecto. Debe ser yyyy-MM-dd");
+							passOK = true;
 						}
 					}
-				}
-				if(pass.equals("") && edad == null){
-					cancelar();
-				}else if(passNOOK){
-					
-				}
-				else{
-					String ack = s_ctrl.performModificarDatos(usuario.getNombre(),pass,edad);
-					messageDialog.reportMessage(ack);
-					ventana.dispose();
-				}
-				
-				
-				/*if(!txtPassNew.getText().equals("")){
-					if(!txtPassRep.getText().equals("") && txtPassNew.getText().equals(txtPassRep.getText())){
-						pass = txtPassNew.getText();
+					if(fechaNueva.equals("") && tieneFecha){
+						fechaOK = false;
 					}else{
-						passNOOK = true;
-						messageDialog.reportMessage("false:Las contraseñas no coinciden");
+						fechaOK = true;
 					}
 				}
-				if(!txtEdadMod.getText().equals("")){
-					if(!txtEdadMod.getText().equals(formato.format(usuario.getFechaNacimiento()))){
-						if(validaFormato(txtEdadMod.getText())){
-							try {
-								edad = formato.parse(txtEdadMod.getText());
-								System.out.println(edad);
-							} catch (ParseException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-						}else{
-							messageDialog.reportMessage("false:El formato de la fecha es incorrecto. Debe ser yyyy-MM-dd");
-						}
-					}else{
-						ventana.dispose();
+				if(passOK){
+					pass = txtPassNew.getText();
+				}
+				if(fechaOK){
+					try {
+						edad = formato.parse(fechaNueva);
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
 				}
-				if(pass.equals("") && edad == null){
-					cancelar();
-				}else if(passNOOK){
-					
-				}
-				else{
-					String ack = s_ctrl.performModificarDatos(usuario.getNombre(),pass,edad);
+				if(passOK || fechaOK){
+					ack = s_ctrl.performModificarDatos(usuario.getNombre(), pass, edad);
 					messageDialog.reportMessage(ack);
-					ventana.dispose();
-				}*/
+				}
+			
 			}
 		});
 	}
@@ -269,34 +259,45 @@ public class UserPanel  extends JPanel{
 			}
 		});
 	}
-	 
-	private boolean validaFormato(String fecha){
-		boolean fechaOK = false;
-		String parts[] = fecha.split("-");
-		System.out.println(fecha+" "+parts);
-		if(parts.length==3){
-			if(parts[0].length()!=4 || !isNumeric(parts[0])){
-				fechaOK = false;
-			}else if(parts[1].length()!=2 || !isNumeric(parts[1]) || Integer.parseInt(parts[1])>12){
-				fechaOK = false;
-			}else if(parts[2].length()!=2 || !isNumeric(parts[2]) || Integer.parseInt(parts[2])>31){
-				fechaOK = false;
-			}else{
-				fechaOK = true;
+	
+	public void calendario(){
+		btnCalendar.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+				String fecha="";
+			    if(usuario.getFechaNacimiento()!=null){
+			    	fecha = formato.format(usuario.getFechaNacimiento());
+			    }
+				pc = new PanelCalendar(fecha);
 			}
-		}else{
-			fechaOK = false;
-		}
-		return fechaOK;
+		});
 	}
 	
-	private static boolean isNumeric(String cadena){
-		try {
-			Integer.parseInt(cadena);
-			return true;
-		} catch (NumberFormatException nfe){
-			return false;
-		}
+	public void avatar(){
+		btnAvatar.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
+	 
+	protected void setFecha(String fecha){
+		this.fechaNueva = fecha;
+		System.out.println(fecha+" "+fechaNueva);
 	}
 	
+	private boolean validaPass(String passN, String passR){
+		boolean passOK = false;
+		if (passN.equals(passR)){
+			passOK = true;
+		}
+		return passOK;
+		
+	}
 }
