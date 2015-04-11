@@ -97,7 +97,7 @@ public class UserPanel  extends JPanel{
 	    this.lblnombre = new JLabel("Nombre: "+usuario.getNombre());
 	   	    
 	    if(usuario.getFechaNacimiento()!=null){
-	    	this.lbledad = new JLabel("Edad: "+calculateAge()+" años");
+	    	this.lbledad = new JLabel("Edad: "+calculateAge()+" anos");
 	    }else{
 	    	this.lbledad = new JLabel("Edad: "+"Sin especificar");
 	    }
@@ -161,9 +161,9 @@ public class UserPanel  extends JPanel{
 		//JPanel botones = new JPanel();
 		
 		lblNameMod = new JLabel("Nombre:");
-		lblPassMod = new JLabel("Contraseña:");
-		lblPassNew = new JLabel("Nueva contraseña:");
-		lblPassRep = new JLabel("Repetir contraseña:");
+		lblPassMod = new JLabel("Contrasena:");
+		lblPassNew = new JLabel("Nueva contrasena:");
+		lblPassRep = new JLabel("Repetir contrasena:");
 		lblEdadMod = new JLabel("Fecha de nacimiento:");
 		lblAvatar = new JLabel("Avatar:");
 		btnModificar = new JButton("Modificar");
@@ -218,7 +218,7 @@ public class UserPanel  extends JPanel{
 					if(!txtPassNew.getText().equals("") && !txtPassRep.getText().equals("")){
 						if(!validaPass(txtPassNew.getText(),txtPassRep.getText())){
 							passOK = false;
-							messageDialog.reportMessage("false:Las contraseñas no coinciden.");
+							messageDialog.reportMessage("false:Las contrasenas no coinciden.");
 						}else{
 							passOK = true;
 						}
@@ -289,7 +289,6 @@ public class UserPanel  extends JPanel{
 	 
 	protected void setFecha(String fecha){
 		this.fechaNueva = fecha;
-		System.out.println(fecha+" "+fechaNueva);
 	}
 	
 	private boolean validaPass(String passN, String passR){

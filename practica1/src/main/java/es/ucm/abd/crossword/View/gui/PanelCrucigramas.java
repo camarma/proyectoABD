@@ -41,7 +41,7 @@ public class PanelCrucigramas extends JPanel{
 	private MessageDialog m_Dialog;
 	private CrosswordPanelMio cp;
 	JFrame ventana;
-	JButton btnAñadir;
+	JButton btnAnadir;
 	JButton btnBuscar;
 	JTextField txtFind;
 	JScrollPane scrollLista;
@@ -70,10 +70,10 @@ public class PanelCrucigramas extends JPanel{
 		add(btnOpenCrucigrama);
 		botonAbrirCrucigrama();
 		add(btnfindCrucigrama);
-		botonAñadirCrucigrama();
+		botonAnadirCrucigrama();
 	}
 	
-	private void botonAñadirCrucigrama(){
+	private void botonAnadirCrucigrama(){
 		btnfindCrucigrama.addActionListener(new ActionListener() {
 		
 			@Override
@@ -115,23 +115,23 @@ public class PanelCrucigramas extends JPanel{
 		scroll.setPreferredSize(new Dimension(1000, 430));
 		lstCrucigramas.setFont(new Font("Courier",Font.PLAIN,16));
 			
-		btnAñadir = new JButton("Añadir");
+		btnAnadir = new JButton("Anadir");
 		btnBuscar = new JButton("Buscar");
 		txtFind = new JTextField(30);
 		centerPanel.add(txtFind);
 		centerPanel.add(btnBuscar);
 		findCrucigramas();
 		centerPanel.add(scroll);
-		centerPanel.add(btnAñadir);
-		añadirCrucigramas();
+		centerPanel.add(btnAnadir);
+		anadirCrucigramas();
 		ventana.add(centerPanel, BorderLayout.CENTER);
 		ventana.setSize(new Dimension(1000,800));
 		//botonLoad();
 		ventana.setVisible(true);
 		
 	}
-	public void añadirCrucigramas(){
-		btnAñadir.addActionListener(new ActionListener() {
+	public void anadirCrucigramas(){
+		btnAnadir.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {

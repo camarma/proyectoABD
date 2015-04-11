@@ -60,7 +60,7 @@ public class Login extends JFrame {
 			txtName.setBounds(180, 30, 160, 25);
 			panel.add(txtName);
 
-			lblPass = new JLabel("Contraseña:");
+			lblPass = new JLabel("Contrasena:");
 			lblPass.setBounds(50, 60, 80, 25);
 			panel.add(lblPass);
 

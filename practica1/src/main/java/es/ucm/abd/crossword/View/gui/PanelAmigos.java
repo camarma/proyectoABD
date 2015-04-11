@@ -32,7 +32,7 @@ public class PanelAmigos extends JPanel{
 	private DefaultListModel<String> modeloListaAmigos;
 	private DefaultListModel<String> modeloLista;
 	private JFrame ventana;
-	private JButton btnAñadir;
+	private JButton btnAnadir;
 	private JButton btnBuscar;
 	private JTextField txtFind;
 	private ArrayList<String> listaUsuarios;
@@ -55,18 +55,18 @@ public class PanelAmigos extends JPanel{
 		lstAmigos = new JList<String>(modeloListaAmigos);
 		scroll = new JScrollPane(lstAmigos);
 		scroll.setPreferredSize(new Dimension(450, 430));
-		btnaddAmigo = new JButton("Añadir amigo");
+		btnaddAmigo = new JButton("Anadir amigo");
 		btndeleteAmigo = new JButton("Borrar amigo");
 		lstAmigos.setFont(new Font("Courier",Font.PLAIN,16));
 		
 		add(scroll);
 		add(btnaddAmigo);
-		añadirAmigos();
+		anadirAmigos();
 		add(btndeleteAmigo);
 		borrarAmigos();
 	 }
 	 
-	 public void añadirAmigos(){
+	 public void anadirAmigos(){
 		 btnaddAmigo.addActionListener(new ActionListener() {
 				
 				@Override
@@ -85,15 +85,15 @@ public class PanelAmigos extends JPanel{
 			scroll.setPreferredSize(new Dimension(500, 500));
 			lst.setFont(new Font("Courier",Font.PLAIN,16));
 				
-			btnAñadir = new JButton("Añadir");
+			btnAnadir = new JButton("Anadir");
 			btnBuscar = new JButton("Buscar");
 			txtFind = new JTextField(30);
 			centerPanel.add(txtFind);
 			centerPanel.add(btnBuscar);
 			findAmigos();
 			centerPanel.add(scroll);
-			centerPanel.add(btnAñadir);
-			añadriAmigos();
+			centerPanel.add(btnAnadir);
+			anadriAmigos();
 			ventana.add(centerPanel, BorderLayout.CENTER);
 			ventana.setSize(500, 740);
 			ventana.setVisible(true);
@@ -112,8 +112,8 @@ public class PanelAmigos extends JPanel{
 			});
 		}
 		
-		public void añadriAmigos(){
-			btnAñadir.addActionListener(new ActionListener() {
+		public void anadriAmigos(){
+			btnAnadir.addActionListener(new ActionListener() {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {

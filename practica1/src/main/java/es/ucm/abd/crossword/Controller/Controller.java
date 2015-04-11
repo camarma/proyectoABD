@@ -33,7 +33,7 @@ public class Controller {
 	/**
 	 * Mètodo encargado de establecer la conexion para generar un nuevo usuario
 	 * @param name -> nombre de usuario
-	 * @param pass -> contraseña de usuario
+	 * @param pass -> contrasena de usuario
 	 */
 	public String performNewUser(String name, String pass) {
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
@@ -45,7 +45,7 @@ public class Controller {
 	/**
 	 * Mètodo encargado de establecer la conexion para ingresar en la aplicación
 	 * @param name -> nombre de usuario
-	 * @param pass -> contraseña de usuario
+	 * @param pass -> contrasena de usuario
 	 */
 	public String performAccept(String name, String pass) {
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);

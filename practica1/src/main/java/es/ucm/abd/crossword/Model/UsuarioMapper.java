@@ -57,7 +57,7 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 	/**
 	 * Método para insertar usuarios.
 	 * @param nombre -> nombre del usuario
-	 * @param password -> contraseña del usuario
+	 * @param password -> contrasena del usuario
 	 * @return true si ha ido bien, false cc y mensaje.
 	 */
 	public String insertUsuario(String nombre, String password) {
@@ -85,7 +85,7 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 	/**
 	 * Método para comprobar si existe el usuario o no
 	 * @param nombre -> nombre del usuario
-	 * @param password -> contraseña del usuario
+	 * @param password -> contrasena del usuario
 	 * @return devuelve un mensaje que afirma si el usuario existe o no
 	 */
 	public String existUsuario(String nombre, String password) {
@@ -101,7 +101,7 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 				if (rs.next()) {
 					return mensaje="true";
 				} else {
-					 return mensaje="false:El usuario introducido o contraseñas no son correctos";
+					 return mensaje="false:El usuario introducido o contrasenas no son correctos";
 				}
 			}
 		} catch (SQLException e) {
@@ -116,9 +116,9 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 	}
 	
 	/**
-	 * Método que devuelve la contraseña del usuario solicitado
+	 * Método que devuelve la contrasena del usuario solicitado
 	 * @param nombre -> nombre del usuario
-	 * @return la contraseña en caso que todo haya ido bien, null en cc
+	 * @return la contrasena en caso que todo haya ido bien, null en cc
 	 */
 	public String getPassword(String nombre) {
 		String tableName = getTableName();
@@ -142,9 +142,9 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 	}
 	
 	/**
-	 * Método para cambiar de contraseña
+	 * Método para cambiar de contrasena
 	 * @param nombre -> nombre del usuario
-	 * @param password -> contraseña del usuario
+	 * @param password -> contrasena del usuario
 	 * @return true si ha ido bien, false cc y mensaje
 	 */
 	public String updatePassword(String nombre, String password) {
@@ -159,9 +159,9 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 			pst.setObject(2,nombre);
 			try {
 				pst.executeUpdate();
-				return mensaje = "true:"+nombre+" tu contraseña ha sido restaurada correctamente.";
+				return mensaje = "true:"+nombre+" tu contrasena ha sido restaurada correctamente.";
 			} catch (Exception e) {
-				return mensaje = "false:Contraseña no restaurada";
+				return mensaje = "false:Contrasena no restaurada";
 			}
 				
 		} catch (SQLException e) {
@@ -171,7 +171,7 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 	}
 	
 	/**
-	 * Método para añdair un crucigrama
+	 * Método para andair un crucigrama
 	 * @param nombre -> nombre del usuario
 	 * @param IdCrucigrama -> id del crucigrama
 	 * @return true en caso de que todo haya ido bien, false en cc y mensaje
@@ -193,7 +193,7 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 				pst.executeUpdate();
 				return mensaje = "true";
 			} catch (Exception e) {
-				return mensaje = "false:Error al asignar nuevo crucigrama añadido";
+				return mensaje = "false:Error al asignar nuevo crucigrama anadido";
 			}
 				
 		} catch (SQLException e) {
@@ -338,7 +338,7 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 				pst.executeUpdate();
 				return mensaje = "true:"+nombre+" tu fecha de nacimiento ha sido restaurada correctamente.";
 			} catch (Exception e) {
-				return mensaje = "false:Contraseña no restaurada";
+				return mensaje = "false:Contrasena no restaurada";
 			}
 				
 		} catch (SQLException e) {
@@ -369,7 +369,7 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 				 pst.executeUpdate();
 				 return mensaje = "true";
 			 } catch (Exception e) {
-				 return mensaje = "false:Error al asignar nuevo crucigrama añadido";
+				 return mensaje = "false:Error al asignar nuevo crucigrama anadido";
 			 }
 		 
 		 } catch (SQLException e) {
