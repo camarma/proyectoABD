@@ -12,7 +12,6 @@ import es.ucm.abd.crossword.Model.Palabra;
 import es.ucm.abd.crossword.Model.PalabraMapper;
 import es.ucm.abd.crossword.Model.Usuario;
 import es.ucm.abd.crossword.Model.UsuarioMapper;
-import es.ucm.abd.crossword.View.gui.Login;
 
 /**
  * Clase encargada de intermediar entre la logica de la aplicación y la vista
@@ -23,8 +22,6 @@ public class Controller {
 	MyConnection conn;
 	DataSource ds;
 	Usuario usr;
-	@SuppressWarnings("unused")
-	private Login ack;
 	public Controller(){
 		conn = new MyConnection();
 		usr = new Usuario();
@@ -39,7 +36,6 @@ public class Controller {
 	public String performNewUser(String name, String pass) {
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
 		String result = usuarioMapper.insertUsuario(name, pass);
-		//conn.close();
 		return result;
 	}
 	
@@ -51,79 +47,129 @@ public class Controller {
 	public String performAccept(String name, String pass) {
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
 		String result = usuarioMapper.existUsuario(name, pass);
-		//conn.close();
 		return result;
 		
 	}
 	
+	/**
+	 * Método encargado de obtener todos los datos del usuario
+	 * @param name -> nombre del usuario
+	 * @return objeto usuario.
+	 */
 	public Usuario DataUser(String name){
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
 		Usuario result = usuarioMapper.getUsuario(name);
-		//conn.close();
 		return result;
 	}
 	
+	/**
+	 * Método encargado de obtener una lista con los crucigramas.
+	 * @return lista de crucigramas
+	 */
 	public ArrayList<Crucigrama> listCrucigramas(){
 		CrucigramaMapper crucigramaMapper = new CrucigramaMapper(ds);
 		ArrayList<Crucigrama> resultado = crucigramaMapper.getCricigramas();
-		//conn.close();
 		return resultado;
 	}
 	
+	/**
+	 * Método encargado de obtener una lista con los crucigramas filtradas por un título.
+	 * @param filter -> filtro para buscar crucigramas
+	 * @return lista de crucigramas
+	 */
 	public ArrayList<Integer> performFindCrucigrama(String filter){
 		CrucigramaMapper crucigramaMapper = new CrucigramaMapper(ds);
 		ArrayList<Integer> resultado = crucigramaMapper.getCrucigramasByTitle(filter);
-		//conn.close();
 		return resultado;
 	}
 	
+	/**
+	 * Método encargado de activar un crucigrama a un usuario.
+	 * @param titulo -> titulo del crucigrama
+	 * @param name -> nombre del usuario
+	 */
 	public void activarCrucigrama(String titulo, String name){
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
-		//conn.close();
 		usuarioMapper.addCrucigrama(titulo, name);
 		
 	}
+	
+	/**
+	 * Método encargado de obtener una lista con los crucigramas de un usuario.
+	 * @param name -> nombre del usuario
+	 * @return lista de crucigramas
+	 */
 	public ArrayList<Crucigrama> listarCrucigramasActivos(String name){
 		CrucigramaMapper crucigramaMapper = new CrucigramaMapper(ds);
 		ArrayList<Crucigrama> resultado = crucigramaMapper.getCricigramasActivos(name);
-		//conn.close();
 		return resultado;
 	}
 	
+	/**
+	 * Método encargado de obtener una lista con los crucigramas de un usuario.
+	 * @param title -> titulo del crucigrama
+	 * @return lista de crucigramas
+	 */
 	public ArrayList<Palabra> listaPalabrasByCrucigrama(String title){
-		CrucigramaMapper crucigramaMapper = new CrucigramaMapper(ds);
 		PalabraMapper    palabraMapper    = new PalabraMapper(ds);
-		//ArrayList<Integer> resultado = crucigramaMapper.getIdPalabrasByCrucigrama(title);
 		ArrayList<Palabra> listaPalabras = palabraMapper.getIdPalabrasByCrucigrama(title);
-		//System.out.println(listaPalabras.get(0).getPosx());
 		return listaPalabras;
 	}
-	//Alberto
+
+	/**
+	 * Método encargado de obtener una lista con los nombres de usuarios filtrados por un nombre.
+	 * @param filter -> filtro de busqueda
+	 * @param nameUser -> nombre del usuario
+	 * @return lista de crucigramas
+	 */
 	public ArrayList<String> performFindFriends(String filter, String nameUser){
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
 		ArrayList<String> listaUsuarios = usuarioMapper.getUsuariosByfilter(filter, nameUser);
 		return listaUsuarios;		
 	}
-	//Alberto
+
+	/**
+	 * Método encargado asignar una amistad.
+	 * @param nameAmigo -> nombre de amigo
+	 * @param nameUser -> nombre del usuario
+	 * @return resultado de la operacion
+	 */
 	public String performAsignarAmistad(String nameUser, String nameAmigo){
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
 		String ack = usuarioMapper.asignarAmistad(nameUser,nameAmigo);
 		return ack;		
 	}
-	//Alberto
+
+	/**
+	 * Método encargado de obtener una lista con los crucigramas de un usuario.
+	 * @param title -> titulo del crucigrama
+	 * @return lista de crucigramas
+	 */
 	public ArrayList<String> performListarAmigosDe(String userName){
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
 		ArrayList<String> listaUsuarios = usuarioMapper.getAmigosDe(userName);
 		return listaUsuarios;		
 	}
-	//ALberto
+
+	/**
+	 * Método encargado de eliminar relacción de amistad.
+	 * @param nameUser -> nombre del usuario
+	 * @param nameAmigo -> nombre del amigo
+	 * @return resultado de la operación
+	 */
 	public String performEliminarAmistad(String nameUser, String nameAmigo){
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
-		String ack = usuarioMapper.EliminarAmistad(nameUser,nameAmigo);
+		String ack = usuarioMapper.eliminarAmistad(nameUser,nameAmigo);
 		return ack;		
 	}
 	
-	//ALberto
+	/**
+	 * Método encargado de modificar la contraseña y la fecha de nacimiento del usuario.
+	 * @param name -> nombre del usuario
+	 * @param pass -> password nueva
+	 * @param edad -> fecha nueva
+	 * @return resultado de la operacion
+	 */
 	public String performModificarDatos(String name,String pass,Date edad){
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
 		String ack="";
@@ -147,20 +193,40 @@ public class Controller {
 		return ack;
 	}
 	
-	//George
+	/**
+	 * Método encargado de añadir las respuestas de los usuarios al historial.
+	 * @param nameUsuario -> nombre del usuario
+	 * @param userAyudado -> nombre usuario ayudado
+	 * @param tituloCruci -> titulo del crucigrama
+	 * @param idPalabra -> identificador de la palabra
+	 * @param respuesta -> respuesta dada
+	 * @param correcto -> correcto o incorrecto
+	 * @param fecha -> fecha de la respuesta
+	 */
 	 public void insertarRespuesta(String nameUsuario, String userAyudado, String tituloCruci, int idPalabra, String respuesta, boolean correcto, String fecha) {
-	 // TODO Auto-generated method stub
+		 // TODO Auto-generated method stub
 		 UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
 		 usuarioMapper.addRespuesta(nameUsuario, userAyudado, tituloCruci, idPalabra, respuesta, correcto, fecha);
 	 }
 
+	/**
+	 * Método encargado de obtener las respuestas correctas de un usuario a un crucigrama.
+	 * @param nameUsuario -> nombre del usuario
+	 * @param tituloCruci -> titulo del crucigrama
+	 * @return lista de respuestas correctas
+	 */
 	 public ArrayList<String> cargarRespuestas(String nameUsuario, String tituloCruci) {
-	 // TODO Auto-generated method stub
+		 // TODO Auto-generated method stub
 		 UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
 		 ArrayList<String> respuestasCorrectas = usuarioMapper.getRespuestasCorrectas(nameUsuario, tituloCruci);
 		 return respuestasCorrectas;
 	 }
 
+	/**
+	 * Método encargado de obtener los puntos que un usuario ha hido obteniendo con sus respuestas y calcular el resultado.
+	 * @param name -> nombre del usuario
+	 * @return puntuacion total
+	 */
 	public Integer performPuntuacion(String name) {
 		// TODO Auto-generated method stub
 		Integer puntuacion=0;
@@ -171,6 +237,13 @@ public class Controller {
 		return puntuacion;
 	}
 
+	/**
+	 * Método encargado realizar peticiones de ayuda
+	 * @param nameUserAyudado -> nombre del usuario ayudado
+	 * @param nameUserAyuda -> nombre usuario ayuda
+	 * @param titulo -> titulo del crucigrama
+	 * @return resultado de la operacion
+	 */
 	public String performPeticion(String nameUserAyudado, String nameUserAyuda, String titulo) {
 		// TODO Auto-generated method stub
 		String ack="";
@@ -179,6 +252,12 @@ public class Controller {
 		return ack;
 	}
 
+	/**
+	 * Método encargado de saber si el crucigrama seleccionado lo has mandado a ayudar o no
+	 * @param nameUserAyudado -> nombre del usuario ayudado
+	 * @param tituloCruci -> titulo del crucigrama
+	 * @return si tienes alguno o no
+	 */
 	public boolean panelBloqueado(String nameUserAyudado, String tituloCruci) {
 		// TODO Auto-generated method stub
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
@@ -191,6 +270,11 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * Método encargado obtener lista de peticiones de ayuda
+	 * @param nameUsuario -> nombre del usuario ayudado
+	 * @return lista de usuario ayudado y crucigrama a ayudar
+	 */
 	public ArrayList<String> listarPeticiones(String nameUsuario) {
 		// TODO Auto-generated method stub
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
@@ -199,6 +283,13 @@ public class Controller {
 		return listPeticiones;
 	}
 
+	/**
+	 * Método encargado de eliminar peticiones de ayuda
+	 * @param nameUsuario -> nombre del usuario
+	 * @param titulo -> titulo del crucigrama
+	 * @param usrAyudado -> nombre usuario ayudado
+	 * @return resultado de la operacion
+	 */
 	public String performEliminarPeticion(String nameUsuario, String titulo, String usrAyudado) {
 		// TODO Auto-generated method stub
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);

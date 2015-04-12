@@ -109,6 +109,11 @@ public class CrucigramaMapper extends AbstractMapper<Crucigrama, Integer>{
 		}
 	}
 	
+	/**
+	 * Método encargado de obtener una lista con los crucigramas de un usuario.
+	 * @param nombre -> nombre del usuario
+	 * @return lista de crucigramas
+	 */
 	public ArrayList<Crucigrama> getCricigramasActivos(String nombre) {
 		List<Integer> idCruci = getCricigramasActivosID(nombre);
 		String tableName = getTableName();
@@ -133,6 +138,10 @@ public class CrucigramaMapper extends AbstractMapper<Crucigrama, Integer>{
 		return listaCrucigramas;
 	}
 		
+	/**
+	 * Método encargado de obtener de bd los crucigramas.
+	 * @return lista de crucigramas
+	 */
 	public ArrayList<Crucigrama> getCricigramas() {
 		String tableName = "crucigramas";
 		String sql = "SELECT * FROM "+tableName;
@@ -152,7 +161,11 @@ public class CrucigramaMapper extends AbstractMapper<Crucigrama, Integer>{
 		}
 	}
 	
-	
+	/**
+	 * Método encargado de devolver lista de crucigramas por id
+	 * @param id
+	 * @return lista crucigramas
+	 */
 	protected Crucigrama getCrucigramasById(Integer id){
 		String tableName = getTableName();
 		String[] columnNames = getColumnNames();

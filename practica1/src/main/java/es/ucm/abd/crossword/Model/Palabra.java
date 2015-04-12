@@ -1,9 +1,7 @@
 package es.ucm.abd.crossword.Model;
-import es.ucm.abd.crossword.CrosswordPanelEventListener;
-import es.ucm.abd.crossword.WordModel;
 
 /**
- * Clase encargada 
+ * Clase encargada de obtener datos de palabra
  * @author Alberto y George
  *
  */

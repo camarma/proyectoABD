@@ -3,7 +3,7 @@ package es.ucm.abd.crossword.Model;
 import java.util.Date;
 
 /**
- * Clase encargada 
+ * Clase encargada obtener datos de crucigramas
  * @author Alberto y George
  *
  */

@@ -11,7 +11,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 /**
- * Clase encargada de las funciones de base de datos para el crucigrama, hereda de {@link AbstractMapper}.
+ * Clase encargada de que funcionen los test
  * @author Alberto y George
  *
  */

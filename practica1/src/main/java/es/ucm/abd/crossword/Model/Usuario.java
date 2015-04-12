@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * Clase encargada 
+ * Clase encargada de obtener datos de un usuario
  * @author Alberto y George
  *
  */
@@ -97,6 +97,12 @@ public class Usuario {
 				+ correcto + " puntuacion= "+puntuacion+"]";
 	}
 
+	/**
+	 * Método encargado de calcular la puntuacion de un usuario.
+	 * @param historial lista de usuario
+	 * @param respuestaAyuda lista de respuestas
+	 * @return
+	 */
 	public Integer calculatePuntos(ArrayList<Usuario> historial,
 			ArrayList<Usuario> respuestaAyuda) {
 		// TODO Auto-generated method stub

@@ -1,7 +1,11 @@
 package es.ucm.abd.crossword.Model;
 
 import es.ucm.abd.crossword.WordModel;
-
+/**
+ * Clase encargada implementar el WordModel panel para montar las palabras en los crucigramas
+ * @author Alberto y George
+ *
+ */
 public class ContienePalabra implements WordModel{
 	private int x;
 	private int y;

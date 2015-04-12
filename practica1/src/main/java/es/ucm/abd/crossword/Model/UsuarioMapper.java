@@ -121,6 +121,11 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		}
 	}
 	
+	/**
+	 * Metodo encargado de obtener todos los datos del usuario a partir del id
+	 * @param name -> nombre del usuario
+	 * @return objeto usuario.
+	 */
 	public Usuario getUsuario(String nombre) {
 		Integer IdUser = getIdByName(nombre,getTableName(),"Nombre");
 		return findById(IdUser);
@@ -214,7 +219,12 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 	}
 	
 
-	//Alberto
+	/**
+	 * Método encargado de obtener una lista con los usuarios filtrados.
+	 * @param filter -> filtro de busqueda
+	 * @param nameUser -> nombre del usuario
+	 * @return lista de nombres de usuario
+	 */
 	public ArrayList<String> getUsuariosByfilter(String filter, String nameUser){
 		String tableName = getTableName();
 		ArrayList<String> nameUsers = new ArrayList<String>();
@@ -237,7 +247,12 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		}
 	}
 	
-	//Alberto
+	/**
+	 * Método encargado asignar amistad.
+	 * @param nameUsr -> filtro de busqueda
+	 * @param nameAmigo -> nombre del usuario
+	 * @return resultado de la operacion
+	 */
 	public String asignarAmistad(String nameUsr, String nameAmigo) {
 		String mensaje="false:Error base de datos";
 		String tableName = "amigo_de";
@@ -263,6 +278,11 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		}
 	}
 	
+	/**
+	 * Método encargado de aceptar amistad.
+	 * @param nameUsr -> filtro de busqueda
+	 * @param nameAmigo -> nombre del usuario
+	 */
 	private void acceptarAmistad(String nameUsr, String nameAmigo){
 		String tableName = "amigo_de";
 		Integer IdUser = getIdByName(nameUsr,getTableName(),"Nombre");
@@ -283,8 +303,12 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		}
 	}
 	
-	//Alberto
-	public ArrayList<Integer> getIdsAmigosDe(Integer idUsr) {
+	/**
+	 * Método encargado de devolver la lista de ids de amigos de un usuario
+	 * @param idUsr
+	 * @return lista de amigos de
+	 */
+	private ArrayList<Integer> getIdsAmigosDe(Integer idUsr) {
 		String tableName = "amigo_de";
 		ArrayList<Integer> listIdsAmigos = new ArrayList<Integer>();
 		String sql = "SELECT `Id_usuario_amigo` FROM "+tableName+" WHERE `Id_usuario`= ?";
@@ -305,7 +329,11 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		}
 	}
 	
-	//Alberto
+	/**
+	 * Método encargado de obtener una lista con los amigos de un usuario.
+	 * @param nameUsr -> nombre del usuario
+	 * @return lista de amigos
+	 */
 	public ArrayList<String> getAmigosDe(String nameUsr) {
 		String tableName = getTableName();
 		Integer idUser = getIdByName(nameUsr,tableName,"Nombre");
@@ -331,8 +359,13 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		return listAmigosDe;
 	}
 	
-	//Alberto
-	public String EliminarAmistad(String nameUsr, String nameAmigo) {
+	/**
+	 * Método encargado de eliminar relacción de amistad.
+	 * @param nameUser -> nombre del usuario
+	 * @param nameAmigo -> nombre del amigo
+	 * @return resultado de la operación
+	 */
+	public String eliminarAmistad(String nameUsr, String nameAmigo) {
 		String mensaje="false:Error base de datos";
 		String tableName = "amigo_de";
 		Integer IdUser = getIdByName(nameUsr,getTableName(),"Nombre");
@@ -345,6 +378,7 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 				pst.setObject(2,IdAmigo);
 			try {
 				pst.executeUpdate();
+				eliminarAmigoMutuo(nameUsr,nameAmigo);
 				return mensaje = "true";
 			} catch (Exception e) {
 				return mensaje = "false:Error al eliminar amigo";
@@ -356,7 +390,38 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		}
 	}
 	
-	//Alberto updateUser
+	/**
+	 * Método encargado de eliminar relacción de amistad en el otro sentido.
+	 * @param nameUser -> nombre del usuario
+	 * @param nameAmigo -> nombre del amigo
+	 * @return resultado de la operación
+	 */
+	private void eliminarAmigoMutuo(String nameUsr, String nameAmigo){
+		String tableName = "amigo_de";
+		Integer IdUser = getIdByName(nameUsr,getTableName(),"Nombre");
+		Integer IdAmigo = getIdByName(nameAmigo,getTableName(),"Nombre");
+		String sql = "DELETE FROM " +tableName+ " WHERE `Id_usuario`= ? AND `Id_usuario_amigo`= ?";
+		
+		try (Connection con = ds.getConnection();
+			 PreparedStatement pst = con.prepareStatement(sql)) {
+				pst.setObject(1,IdAmigo);
+				pst.setObject(2,IdUser);
+			try {
+				pst.executeUpdate();
+			} catch (Exception e) {
+			}
+				
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Método encargado de modificar la fecha de nacimiento del usuario.
+	 * @param name -> nombre del usuario
+	 * @param edad -> fecha nueva
+	 * @return resultado de la operacion
+	 */
 	public String updateEdad(String nombre, Date edad) {
 		String mensaje="false:Error base de datos";
 		String tableName = getTableName();
@@ -380,7 +445,17 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		}
 	}
 	
-	//george
+	/**
+	 * Método encargado de añadir las respuestas de los usuarios al historial.
+	 * @param nameUsuario -> nombre del usuario
+	 * @param userAyudado -> nombre usuario ayudado
+	 * @param tituloCruci -> titulo del crucigrama
+	 * @param IdPalabra -> identificador de la palabra
+	 * @param respuesta -> respuesta dada
+	 * @param correcto -> correcto o incorrecto
+	 * @param fecha -> fecha de la respuesta
+	 * return resultado de la operacion
+	 */
 	 public String addRespuesta(String nameUsuario,String userAyudado, String tituloCruci, int IdPalabra, String respuesta, boolean correcto, String fecha) {
 	 // TODO Auto-generated method stub
 		 String mensaje="false:Error base de datos";
@@ -412,6 +487,12 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		 }
 	 }
 
+	/**
+	 * Método encargado de obtener las respuestas correctas de un usuario a un crucigrama.
+	 * @param nameUsuario -> nombre del usuario
+	 * @param tituloCruci -> titulo del crucigrama
+	 * @return lista de respuestas.
+	 */
 	 public ArrayList<String> getRespuestasCorrectas(String nameUsuario, String tituloCruci) {
 		 String tableName = "historial";
 		 Integer IdUser = getIdByName(nameUsuario,getTableName(),"Nombre");
@@ -436,6 +517,11 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 			 }
 	 }
 	 
+	/**
+	 * Método encargado de obtener una lista del usuario que ha respondido a sus crucigramas.
+	 * @param name -> nombre del usuario
+	 * @return lista del historial de usuario
+	 */
 	 public ArrayList<Usuario> getHistorialUsuario(String nameUsuario) {
 		 Integer IdUser = getIdByName(nameUsuario,getTableName(),"Nombre");
 		 ArrayList<Usuario> historial = new ArrayList<Usuario>();
@@ -456,6 +542,11 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 			 }
 	 }
 
+	/**
+	 * Método encargado de obtener la lista de usuario cuyas respuestas sean de ayuda
+	 * @param name -> nombre del usuario
+	 * @return puntuacion total
+	 */
 	public ArrayList<Usuario> getRespuestasAyuda(String name) {
 		// TODO Auto-generated method stub
 		Integer IdUser = getIdByName(name,getTableName(),"Nombre");
@@ -477,6 +568,13 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 			 }
 	}
 
+	/**
+	 * Método encargado realizar peticiones de ayuda
+	 * @param nameUserAyudado -> nombre del usuario ayudado
+	 * @param nameUserAyuda -> nombre usuario ayuda
+	 * @param titulo -> titulo del crucigrama
+	 * @return resultado de la operacion
+	 */
 	public String insertPeticion(String nameUserAyudado, String nameUserAyuda, String titulo) {
 		 String mensaje="false:Error base de datos";
 		 String tableName = "lista_peticiones";
@@ -504,6 +602,12 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		 }
 	}
 
+	/**
+	 * Método encargado de saber si el crucigrama seleccionado lo has mandado a ayudar o no
+	 * @param nameUserAyudado -> nombre del usuario ayudado
+	 * @param tituloCruci -> titulo del crucigrama
+	 * @return si tienes alguno o no
+	 */
 	public Integer ayudas(String nameUserAyudado, String tituloCruci) {
 		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
@@ -527,6 +631,11 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 			 }
 	}
 
+	/**
+	 * Método encargado obtener lista de peticiones de ayuda
+	 * @param nameUsuario -> nombre del usuario ayudado
+	 * @return lista con el crucigrama y su usuario
+	 */
 	public ArrayList<String> listaIDS(String nameUsuario) {
 		// TODO Auto-generated method stub
 		Integer IdUser = getIdByName(nameUsuario,getTableName(),"Nombre");
@@ -557,6 +666,11 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		
 	}
 
+	/**
+	 * Método encargado obtener titulo del crucigrama con id
+	 * @param id -> id del crucigrama
+	 * @return resultado de la operacion
+	 */
 	private String getCrucigramaById(Integer id) {
 		// TODO Auto-generated method stub
 		String tableName = "crucigramas";
@@ -580,6 +694,11 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		}
 	}
 	
+	/**
+	 * Método encargado obtener nombre usuario con id
+	 * @param id -> id del usuario
+	 * @return resultado de la operacion
+	 */
 	private String getUserById(Integer id) {
 		// TODO Auto-generated method stub
 		String tableName = getTableName();
@@ -603,6 +722,11 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		}
 	}
 	
+	/**
+	 * Método encargado de devolver un array con el usuario y el crucigrama que ha solicitado ayuda
+	 * @param listaIDPeticiones -> lista de id de peticiones de usuario y crucigrama
+	 * @return lista de usuario y crucigrama
+	 */
 	private ArrayList<String> obtenerValores(ArrayList<String> listaIDPeticiones){
 		ArrayList<String> listaUsuarios = new ArrayList<String>();
 		ArrayList<String> listaCrucigramas = new ArrayList<String>();
@@ -616,7 +740,14 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 		}
 		return listaPeticiones;
 	}
-
+	
+	/**
+	 * Método encargado de eliminar peticiones de ayuda.
+	 * @param nameUsuario -> nombre del usuario
+	 * @param titulo -> titulo del crucigrama
+	 * @param usrAyudado -> nombre usuario ayudado
+	 * @return resultado de la operacion
+	 */
 	public String EliminarPeticion(String nameUsuario, String titulo, String usrAyudado) {
 		
 		String mensaje="false:Error base de datos";

@@ -50,6 +50,12 @@ public class PalabraMapper extends AbstractMapper<Palabra, Integer>{
 		return new Palabra(idPalabra, secuencia, enunciado, fotoBytes);
 	}
 	
+	/**
+	 * Método para generar objetos palabras con idPalabra, secuencia, enunciado, fotoBytes, posx, posy, orientacion para utilizarlo a la hora de montar un crucigrama
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
 	protected Palabra buildObject2(ResultSet rs) throws SQLException {
 		Integer idPalabra = rs.getInt(getKeyColumnName());
 		String secuencia = rs.getString("Secuencia");
@@ -67,35 +73,12 @@ public class PalabraMapper extends AbstractMapper<Palabra, Integer>{
 		return new Palabra(idPalabra, secuencia, enunciado, fotoBytes, posx, posy, orientacion);
 	}
 	
-	
-	public ArrayList<Palabra> getPalabrasByCrucigrama(ArrayList<Integer> listaIDs){
-		String tableName = getTableName();
-		//Obtenermos el id del usuario
-		ArrayList<Palabra> listaPalabras = new ArrayList<Palabra>();
-		for (int i = 0;i<listaIDs.size();i++){
-			String sql = "SELECT * FROM "+tableName+" WHERE `Id`=? ";
-			try (Connection con = ds.getConnection();
-				 PreparedStatement pst = con.prepareStatement(sql)) {
-				
-				pst.setObject(1, listaIDs.get(i));
-				
-				try(ResultSet rs = pst.executeQuery()) {
-					while (rs.next()) {
-						listaPalabras.add(buildObject(rs));
-					} 
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return null;
-			}
-		}
-		return listaPalabras;
-	}
-	
-	
+	/**
+	 * Método encargado de obtener una lista de palabras de un crucigrama.
+	 * @param title -> titulo del crucigrama
+	 * @return lista de palabaras
+	 */
 	public ArrayList<Palabra> getIdPalabrasByCrucigrama(String title){
-		//SELECT * FROM `contiene_palabra` as cp, `palabras` as p WHERE cp.`Id_palabra`= p.`Id` and cp.`Id_crucigrama`='1' 
-		String tableName = "contiene_palabra";
 		//Obtenermos el id del usuario
 		Integer IdCruci = getIdByName(title,"crucigramas","Titulo");
 		ArrayList<Palabra> idPalabras = new ArrayList<Palabra>();
