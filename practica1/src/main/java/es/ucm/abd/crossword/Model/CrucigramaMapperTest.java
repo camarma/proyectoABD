@@ -10,17 +10,15 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Clase encargada de las funciones de base de datos para el crucigrama, hereda de {@link AbstractMapper}.
  * @author Alberto y George
  *
  */
 
-public class CrucigramaMapper extends AbstractMapper<Crucigrama, Integer>{
+public class CrucigramaMapperTest extends AbstractMapper<Crucigrama, Integer>{
 
-	public CrucigramaMapper(DataSource ds) {
+	public CrucigramaMapperTest(DataSource ds) {
 		super(ds);
 		// TODO Auto-generated constructor stub
 	}
@@ -58,9 +56,9 @@ public class CrucigramaMapper extends AbstractMapper<Crucigrama, Integer>{
 	 * @param filter -> la cadena de busqueda
 	 * @return devuelve la lista de ids ,y null en cc
 	 */
-	public ArrayList<Integer> getCrucigramasByTitle(String filter) {
+	public List<Integer> getCrucigramasByTitle(String filter) {
 		String tableName = getTableName();
-		ArrayList<Integer> idCruci = new ArrayList<Integer>();
+		List<Integer> idCruci = new ArrayList<Integer>();
 		String sql = "SELECT `Id` FROM "+tableName+" WHERE `Titulo` LIKE '%' ? '%'";
 		try (Connection con = ds.getConnection();
 			 PreparedStatement pst = con.prepareStatement(sql)) {
@@ -84,10 +82,10 @@ public class CrucigramaMapper extends AbstractMapper<Crucigrama, Integer>{
 	 * @param nombre -> nombre del usuario
 	 * @return devuelve la lista de ids ,y null en cc
 	 */
-	public List<Integer> getCricigramasActivosID(String nombre) {
+	public List<Integer> getCricigramasActivos(String nombre) {
 		String tableName = "hace_crucigrama";
 		//Obtenermos el id del usuario
-		Integer IdUser = getIdByName(nombre,"usuarios","Nombre");
+		Integer IdUser = getIdByName(nombre, "usuarios", "Nombre");
 		List<Integer> idCruci = new ArrayList<Integer>();
 		int activo = 1;
 		String sql = "SELECT `Id_crucigrama` FROM "+tableName+" WHERE `Id_usuario`=? and `Activo`=? ";
@@ -108,74 +106,4 @@ public class CrucigramaMapper extends AbstractMapper<Crucigrama, Integer>{
 			return null;
 		}
 	}
-	
-	public ArrayList<Crucigrama> getCricigramasActivos(String nombre) {
-		List<Integer> idCruci = getCricigramasActivosID(nombre);
-		String tableName = getTableName();
-		ArrayList<Crucigrama> listaCrucigramas = new ArrayList<Crucigrama>();
-		for (int i = 0;i<idCruci.size();i++){
-			String sql = "SELECT * FROM "+tableName+" WHERE `Id`=? ";
-			try (Connection con = ds.getConnection();
-				 PreparedStatement pst = con.prepareStatement(sql)) {
-				
-				pst.setObject(1, idCruci.get(i));
-				
-				try(ResultSet rs = pst.executeQuery()) {
-					while (rs.next()) {
-						listaCrucigramas.add(buildObject(rs));
-					} 
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return null;
-			}
-		}
-		return listaCrucigramas;
-	}
-		
-	public ArrayList<Crucigrama> getCricigramas() {
-		String tableName = "crucigramas";
-		String sql = "SELECT * FROM "+tableName;
-		ArrayList<Crucigrama> listaCrucigramas = new ArrayList<Crucigrama>();
-		try (Connection con = ds.getConnection();
-			PreparedStatement pst = con.prepareStatement(sql)) {
-		
-			try(ResultSet rs = pst.executeQuery()) {
-				while (rs.next()) {
-					listaCrucigramas.add(buildObject(rs));
-				} 
-				return listaCrucigramas;
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	
-	protected Crucigrama getCrucigramasById(Integer id){
-		String tableName = getTableName();
-		String[] columnNames = getColumnNames();
-		String keyColumnName = getKeyColumnName();
-		
-		String sql = "SELECT " + StringUtils.join(columnNames, ", ") + " FROM "
-				+ tableName + " WHERE "+ keyColumnName + " = ?";
-		try (Connection con = ds.getConnection();
-			 PreparedStatement pst = con.prepareStatement(sql)) {
-			
-			pst.setObject(1, id);
-			
-			try(ResultSet rs = pst.executeQuery()) {
-				if (rs.next()) {
-					return buildObject(rs);
-				} else {
-					return null;
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 }

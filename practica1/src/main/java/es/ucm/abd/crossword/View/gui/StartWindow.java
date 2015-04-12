@@ -32,11 +32,11 @@ public class StartWindow extends JFrame {
 		private UserPanel up;
 		private PanelPrincipal lp;
 		
-		public StartWindow(Usuario data) {
+		public StartWindow(Usuario data, Integer puntuacion) {
 
 			// Titulo del la ventana
 			super("Bienvenido");
-			this.up = new UserPanel(data);
+			this.up = new UserPanel(data,puntuacion);
 			this.lp = new PanelPrincipal((String)data.getNombre());
 			build();
 

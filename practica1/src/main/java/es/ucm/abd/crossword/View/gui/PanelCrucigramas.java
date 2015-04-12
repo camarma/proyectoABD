@@ -48,7 +48,6 @@ public class PanelCrucigramas extends JPanel{
 	JList<String> lstCrucigramas;
 	DefaultListModel<String> modeloLista;
 	
-	
 	public PanelCrucigramas(String name){
 		this.nameUsuario = name;
 		s_ctrl = new Controller();
@@ -100,7 +99,7 @@ public class PanelCrucigramas extends JPanel{
 				}else{
 					String valor =String.valueOf(tbCrucigrama.getValueAt(tbCrucigrama.getSelectedRow(),0));
 					ArrayList<Palabra> listWord = s_ctrl.listaPalabrasByCrucigrama(valor);
-					cp = new CrosswordPanelMio(listWord, nameUsuario, valor);
+					cp = new CrosswordPanelMio(listWord, nameUsuario, valor, null, false,"");
 				}
 			}
 		});
@@ -126,7 +125,6 @@ public class PanelCrucigramas extends JPanel{
 		anadirCrucigramas();
 		ventana.add(centerPanel, BorderLayout.CENTER);
 		ventana.setSize(new Dimension(1000,800));
-		//botonLoad();
 		ventana.setVisible(true);
 		
 	}

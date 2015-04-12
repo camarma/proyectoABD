@@ -111,10 +111,11 @@ public class Login extends JFrame {
 						messageDialog.reportMessage("false:Debes rellenar los campos");
 					}else{
 						String ack = s_ctrl.performAccept(txtName.getText(),txtPass.getText());
+						Integer puntuacion = s_ctrl.performPuntuacion(txtName.getText());
 						String parts[] = ack.split(":");
 						if(parts[0].equals("true")){
 							Usuario dataUsr = s_ctrl.DataUser(txtName.getText());
-							StartWindow ventanaInicio = new StartWindow(dataUsr);
+							StartWindow ventanaInicio = new StartWindow(dataUsr,puntuacion);
 							ventanaInicio.setVisible(true);
 							Login.this.dispose();
 						}else{

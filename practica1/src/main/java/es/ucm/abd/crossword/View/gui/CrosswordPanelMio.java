@@ -1,6 +1,7 @@
 package es.ucm.abd.crossword.View.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -12,10 +13,12 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -48,25 +51,47 @@ public class CrosswordPanelMio extends JFrame{
 	private String tituloCruci;
 	private String fecha;
 	private int numLetras;
+	private UserPanel up;
 	final private String src = "img/no_foto.png";
+	private JFrame ventana;
+	private DefaultListModel<String> modeloLista;
+	private JList<String> lst;
+	private JScrollPane scroll;
+	private JButton btnEnviar;
+	private ArrayList<String> listaAmigosDe;
+	private boolean bloqueado = false;
+	private boolean ayuda = false;
+	private ArrayList<String> listaRespuestas;
+	private String userAyudado="";
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public CrosswordPanelMio(ArrayList<Palabra> listWord, String nameUsuario, String tituloCruci){
+	public CrosswordPanelMio(ArrayList<Palabra> listWord, String nameUsuario, String tituloCruci, ArrayList<String> listaRespuestas, boolean ayuda,String userAyudado){
+		super(tituloCruci);
 		this.messageDialog = new MessageDialog();
 		this.listWord = listWord;
 		this.nameUsuario = nameUsuario;
 		this.tituloCruci = tituloCruci;
 		this.s_ctrl = new Controller();
+		this.up = new UserPanel();
+		this.ayuda = ayuda;
+		if(listaRespuestas!=null){
+			this.listaRespuestas = listaRespuestas;
+		}
+		if(ayuda){
+			this.userAyudado = userAyudado;
+		}else{
+			this.userAyudado = nameUsuario;
+		}
 		listaRespCorrectas = new ArrayList<String>();
-
-
+		listaAmigosDe = s_ctrl.performListarAmigosDe(nameUsuario);
+		bloqueado = s_ctrl.panelBloqueado(nameUsuario,tituloCruci);
 		build();
 		txtDescripcion.setEnabled(false);
 		cargarRespuestas();
-
 	}
 
 	/**
@@ -116,11 +141,14 @@ public class CrosswordPanelMio extends JFrame{
 		btnAccept = new JButton("Aceptar");
 		botonAceptar();
 		panelRespuesta.add(btnAccept);
-		
 		btnAyuda = new JButton("Enviar a amigo...");
+		if(!ayuda){
+			panelRespuesta.add(btnAyuda);
+		}
 		
+		enviarPeticion();
 		bloquearTextos();
-		panelRespuesta.add(btnAyuda);
+		
 		this.add(panelSur, BorderLayout.SOUTH);
 		panelSur.add(panelPistas, BorderLayout.NORTH);
 		panelSur.add(panelRespuesta, BorderLayout.SOUTH);
@@ -147,7 +175,7 @@ public class CrosswordPanelMio extends JFrame{
 					cont++;            		
 				}
 				
-				if(encontrada == true){
+				if(encontrada == true || bloqueado){
 					bloquearTextos();
 				}else{
 					desbloquearTextos();
@@ -200,10 +228,19 @@ public class CrosswordPanelMio extends JFrame{
 						correcto=false;
 					}
 					fecha= getFechaActual();
-					s_ctrl.insertarRespuesta(nameUsuario, tituloCruci, listWord.get(index).getId(), txtRespuesta.getText(), correcto, fecha);
+					s_ctrl.insertarRespuesta(nameUsuario,userAyudado, tituloCruci, listWord.get(index).getId(), txtRespuesta.getText(), correcto, fecha);
 				}
 			}
 		});
+	}
+	
+	private void enviarPeticion(){
+		btnAyuda.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				ventanaAmigos();
+			}});
 	}
 	
 	private int comparacion(){
@@ -224,14 +261,18 @@ public class CrosswordPanelMio extends JFrame{
 	}
 	
 	private void cargarRespuestas(){
-		listaRespCorrectas = s_ctrl.cargarRespuestas(nameUsuario, tituloCruci);
-			for(int i=0; i < listaRespCorrectas.size(); i++){
-				for(int j=0;j <lista.size(); j++){
-					if(listaRespCorrectas.get(i).toUpperCase().equals(lista.get(j).getWord())){
-						panel.showWord(lista.get(j));
-					}
+		if(!ayuda){
+			listaRespCorrectas = s_ctrl.cargarRespuestas(nameUsuario, tituloCruci);
+		}else{
+			listaRespCorrectas = listaRespuestas;
+		}
+		for(int i=0; i < listaRespCorrectas.size(); i++){
+			for(int j=0;j <lista.size(); j++){
+				if(listaRespCorrectas.get(i).toUpperCase().equals(lista.get(j).getWord())){
+					panel.showWord(lista.get(j));
 				}
 			}
+		}
 	}
 	
 	private void bloquearTextos(){
@@ -244,6 +285,50 @@ public class CrosswordPanelMio extends JFrame{
 		txtRespuesta.setEnabled(true);
 		btnAccept.setEnabled(true);
 		btnAyuda.setEnabled(true);	
+	}
+	
+	private void ventanaAmigos(){
+		ventana = new JFrame("Buscar Amigos");
+		JPanel centerPanel = new JPanel();
+		modeloLista = new DefaultListModel<String>();
+		lst = new JList<String>(modeloLista);
+		scroll = new JScrollPane(lst);
+		scroll.setPreferredSize(new Dimension(500, 500));
+		lst.setFont(new Font("Courier",Font.PLAIN,16));
+		pintarLista();
+		btnEnviar = new JButton("Enviar");
+		centerPanel.add(scroll);
+		centerPanel.add(btnEnviar);
+		solicitarAyuda();
+		ventana.add(centerPanel, BorderLayout.CENTER);
+		ventana.setSize(500, 740);
+		ventana.setVisible(true);
+		
+	}
+	
+	public void pintarLista(){
+		String programLista[] = new String[listaAmigosDe.size()];
+    	modeloLista.clear();
+        for (int i=0;i<listaAmigosDe.size();i++){
+        	programLista[i] = "   "+(i+1)+"-   Nombre:   "+listaAmigosDe.get(i);
+        	modeloLista.addElement(programLista[i]+"\n");
+        }
+	}
+	
+	private void solicitarAyuda(){
+		btnEnviar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				s_ctrl.performPeticion(nameUsuario,lst.getSelectedValue().split("   ")[3].trim(),tituloCruci);
+				ventana.dispose();
+				bloquearTextos();
+				bloqueanel();
+				
+			}});
+	}
+	private void bloqueanel(){
+		bloqueado = true;
 	}
 	
 }

@@ -27,6 +27,7 @@ public class Controller {
 	private Login ack;
 	public Controller(){
 		conn = new MyConnection();
+		usr = new Usuario();
 		ds = conn.getDS();
 	}
 	
@@ -147,10 +148,10 @@ public class Controller {
 	}
 	
 	//George
-	 public void insertarRespuesta(String nameUsuario, String tituloCruci, int idPalabra, String respuesta, boolean correcto, String fecha) {
+	 public void insertarRespuesta(String nameUsuario, String userAyudado, String tituloCruci, int idPalabra, String respuesta, boolean correcto, String fecha) {
 	 // TODO Auto-generated method stub
 		 UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
-		 usuarioMapper.addRespuesta(nameUsuario, tituloCruci, idPalabra, respuesta, correcto, fecha);
+		 usuarioMapper.addRespuesta(nameUsuario, userAyudado, tituloCruci, idPalabra, respuesta, correcto, fecha);
 	 }
 
 	 public ArrayList<String> cargarRespuestas(String nameUsuario, String tituloCruci) {
@@ -159,4 +160,49 @@ public class Controller {
 		 ArrayList<String> respuestasCorrectas = usuarioMapper.getRespuestasCorrectas(nameUsuario, tituloCruci);
 		 return respuestasCorrectas;
 	 }
+
+	public Integer performPuntuacion(String name) {
+		// TODO Auto-generated method stub
+		Integer puntuacion=0;
+		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
+		ArrayList<Usuario> historial = usuarioMapper.getHistorialUsuario(name);
+		ArrayList<Usuario> respuestaAyuda = usuarioMapper.getRespuestasAyuda(name);
+		puntuacion = usr.calculatePuntos(historial,respuestaAyuda);
+		return puntuacion;
+	}
+
+	public String performPeticion(String nameUserAyudado, String nameUserAyuda, String titulo) {
+		// TODO Auto-generated method stub
+		String ack="";
+		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
+		ack = usuarioMapper.insertPeticion(nameUserAyudado, nameUserAyuda, titulo);
+		return ack;
+	}
+
+	public boolean panelBloqueado(String nameUserAyudado, String tituloCruci) {
+		// TODO Auto-generated method stub
+		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
+		Integer ack;
+		ack = usuarioMapper.ayudas(nameUserAyudado, tituloCruci);
+		if(ack!=0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	public ArrayList<String> listarPeticiones(String nameUsuario) {
+		// TODO Auto-generated method stub
+		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
+		ArrayList<String> listPeticiones = new ArrayList<String>();
+		listPeticiones = usuarioMapper.listaIDS(nameUsuario);
+		return listPeticiones;
+	}
+
+	public String performEliminarPeticion(String nameUsuario, String titulo, String usrAyudado) {
+		// TODO Auto-generated method stub
+		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
+		String ack = usuarioMapper.EliminarPeticion(nameUsuario, titulo, usrAyudado);
+		return ack;	
+	}
 }

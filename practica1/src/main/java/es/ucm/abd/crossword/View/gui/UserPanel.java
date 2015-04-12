@@ -1,7 +1,6 @@
 package es.ucm.abd.crossword.View.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -9,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -32,43 +30,40 @@ public class UserPanel  extends JPanel{
 	private JLabel lbledad;  
 	private JLabel lblpuntos;  
 	private Usuario usuario;
-	private String puntos;
+	private Integer puntos=0;
 	private JButton btnEdit;
 	private JFrame ventana;
 	private JButton btnModificar;
 	private JButton btnCancelar;
 	private JLabel lblNameMod;
-	private JLabel lblPassMod;
 	private JLabel lblPassNew;
 	private JLabel lblPassRep;
 	protected JLabel lblEdadMod;
 	private JLabel lblName;
 	private JTextField txtPassNew;
 	private JTextField txtPassRep;
-	private JTextField txtEdadMod;
 	private Controller s_ctrl;
 	private MessageDialog messageDialog;
 	private JButton btnCalendar;
 	private PanelCalendar pc;
 	private static String fechaNueva ="";
 	private boolean tieneFecha=false;
-	private String fecha;
 	private JButton btnAvatar;
 	private JLabel lblAvatar;
+	private static String nombre; 
 	
 	/**
 	 * Constructora para inicializar el toolbar panel con sus botones y llamar al metodo build
 	 * @param gui recibe como entrada al controlador
 	 */
-	public UserPanel(Usuario data){
+	public UserPanel(Usuario data, Integer puntuacion){
 		this.s_ctrl = new Controller();
 		this.messageDialog = new MessageDialog();
 		this.usuario = data;
-		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+		this.puntos = puntuacion;
+		this.nombre = usuario.getNombre();
 		if(usuario.getFechaNacimiento()!=null)
-			tieneFecha = true;
-			//fechaNueva = formato.format(usuario.getFechaNacimiento());
-			
+			tieneFecha = true;	
 		build();
 	}
 	public UserPanel(){
@@ -154,14 +149,13 @@ public class UserPanel  extends JPanel{
 	 private void ventanaEditar(){
 		JPanel panelCalendar = new JPanel();
 		JPanel panelAvatar = new JPanel();
-		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
 		ventana = new JFrame("Editar datos");
 		//JPanel centerPanel = new JPanel();
 		JPanel datos = new JPanel(new GridLayout(6,0));	
 		//JPanel botones = new JPanel();
 		
 		lblNameMod = new JLabel("Nombre:");
-		lblPassMod = new JLabel("Contrasena:");
+		new JLabel("Contrasena:");
 		lblPassNew = new JLabel("Nueva contrasena:");
 		lblPassRep = new JLabel("Repetir contrasena:");
 		lblEdadMod = new JLabel("Fecha de nacimiento:");

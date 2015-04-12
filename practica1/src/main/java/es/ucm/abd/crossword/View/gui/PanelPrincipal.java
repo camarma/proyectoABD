@@ -20,7 +20,7 @@ public class PanelPrincipal  extends JPanel{
 		
 		this.lc = new PanelCrucigramas(nameUsuario);
 		this.la = new PanelAmigos(nameUsuario);
-		this.lay = new PanelAyuda();
+		this.lay = new PanelAyuda(nameUsuario);
 		
 		build();
 	}
