@@ -34,7 +34,6 @@ public class PanelCalendar extends JPanel{
 	public PanelCalendar(String fecha){
 		jc = new JCalendar();
 		up = new UserPanel();
-		up.lblEdadMod = new JLabel();
 		this.messageDialog = new MessageDialog();
 		this.fechaActual = fecha;
 		build();
@@ -86,6 +85,7 @@ public class PanelCalendar extends JPanel{
 				if(year>1900 && year<2016){
 					fechaNueva = jc.getYearChooser().getYear() + "-" + (jc.getMonthChooser().getMonth()+1) + "-" + jc.getDayChooser().getDay();
 					up.setFecha(fechaNueva);
+					up.refresh();
 					ventana.dispose();
 				}else{
 					messageDialog.reportMessage("false:El formato de la fecha es incorrecto.");

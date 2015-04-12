@@ -32,8 +32,8 @@ public class UserPanel  extends JPanel{
 
 	private JLabel lblfoto;  
 	private JLabel lblnombre;  
-	private JLabel lbledad;  
-	private JLabel lblpuntos;  
+	private static JLabel lbledad;  
+	private static JLabel lblpuntos;  
 	private Usuario usuario;
 	private Integer puntos=0;
 	private JButton btnEdit;
@@ -43,7 +43,7 @@ public class UserPanel  extends JPanel{
 	private JLabel lblNameMod;
 	private JLabel lblPassNew;
 	private JLabel lblPassRep;
-	protected JLabel lblEdadMod;
+	private JLabel lblEdadMod;
 	private JLabel lblName;
 	private JTextField txtPassNew;
 	private JTextField txtPassRep;
@@ -91,6 +91,7 @@ public class UserPanel  extends JPanel{
 	/**
 	 * metodo encargado de construir el panel
 	 */
+	@SuppressWarnings("static-access")
 	private void build(){
 		
 		setBorder(new TitledBorder("Usuario"));
@@ -140,7 +141,13 @@ public class UserPanel  extends JPanel{
 		Date fechaActual = new Date();
 		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
 		String hoy = formato.format(fechaActual);
-		String fechanNaci = formato.format(usuario.getFechaNacimiento());
+		String fechanNaci = "";
+		if(tieneFecha){
+			fechanNaci = formato.format(usuario.getFechaNacimiento());
+		}else{
+			fechanNaci = fechaNueva;
+		}
+		
 		String[] dat1 = fechanNaci.split("-");
 		String[] dat2 = hoy.split("-");
 		int anos = Integer.parseInt(dat2[0]) - Integer.parseInt(dat1[0]);
@@ -178,9 +185,7 @@ public class UserPanel  extends JPanel{
 		JPanel panelCalendar = new JPanel();
 		JPanel panelAvatar = new JPanel();
 		ventana = new JFrame("Editar datos");
-		//JPanel centerPanel = new JPanel();
 		JPanel datos = new JPanel(new GridLayout(6,0));	
-		//JPanel botones = new JPanel();
 		
 		lblNameMod = new JLabel("Nombre:");
 		new JLabel("Contrasena:");
@@ -343,5 +348,23 @@ public class UserPanel  extends JPanel{
 		}
 		return passOK;
 		
+	}
+	
+	/**
+	 * refrescar edad
+	 */
+	@SuppressWarnings("static-access")
+	public void refresh(){
+		this.lbledad.setText("Edad: "+calculateAge()+" años");
+	}
+	
+	/**
+	 * refrescar puntuacion
+	 * @param puntuacion
+	 */
+	@SuppressWarnings("static-access")
+	public void refreshPuntuacion(Integer puntuacion) {
+		// TODO Auto-generated method stub
+		this.lblpuntos.setText("Puntos: "+puntuacion+" puntos");
 	}
 }

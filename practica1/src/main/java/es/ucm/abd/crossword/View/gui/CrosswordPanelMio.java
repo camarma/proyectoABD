@@ -50,13 +50,12 @@ public class CrosswordPanelMio extends JFrame{
 	private CrosswordPanel<ContienePalabra> panel;
 	private JScrollPane jScrollPane;
 	private List<ContienePalabra> lista;
-	ArrayList<String> listaRespCorrectas;
+	private ArrayList<String> listaRespCorrectas;
 	private Controller s_ctrl;
 	private String nameUsuario;
 	private String tituloCruci;
 	private String fecha;
 	private int numLetras;
-	@SuppressWarnings("unused")
 	private UserPanel up;
 	final private String src = "img/no_foto.png";
 	private JFrame ventana;
@@ -194,6 +193,8 @@ public class CrosswordPanelMio extends JFrame{
 					}
 					fecha= getFechaActual();
 					s_ctrl.insertarRespuesta(nameUsuario,userAyudado, tituloCruci, listWord.get(index).getId(), txtRespuesta.getText(), correcto, fecha);
+					Integer puntuacion = s_ctrl.performPuntuacion(nameUsuario);
+					up.refreshPuntuacion(puntuacion);
 				}
 			}
 		});
