@@ -23,6 +23,12 @@ public class MessageDialog {
 		}
 	}
 	
+	/**
+	 * Metodo encargado de generar la ventana de notificaciones
+	 * @param msg
+	 * @param titulo
+	 * @param rutaFoto
+	 */
 	private void alertMessage(String msg, String titulo, String rutaFoto){
 		JDialog dialogo = new JDialog();
 		Image img = new ImageIcon(Login.class.getResource(rutaFoto)).getImage();

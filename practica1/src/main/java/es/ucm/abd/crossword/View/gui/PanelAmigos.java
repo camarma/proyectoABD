@@ -1,5 +1,4 @@
 package es.ucm.abd.crossword.View.gui;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -14,15 +13,16 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-
 import es.ucm.abd.crossword.Controller.Controller;
-import es.ucm.abd.crossword.Model.Usuario;
 
 
+/**
+ * Clase encargada de mostrar la lista de los amigos 
+ * @author Alberto y George
+ *
+ */
 public class PanelAmigos extends JPanel{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private JButton btnaddAmigo;
 	private JButton btndeleteAmigo;
@@ -41,6 +41,10 @@ public class PanelAmigos extends JPanel{
 	private String nameUsuario;
 	private MessageDialog messageDialog;
 	
+	/**
+	 * La constructora donde le paso el nombre del usuario logado para recuperar las lista de sus amigos 
+	 * @param name el nombre del usuario logado
+	 */
 	public PanelAmigos(String name){
 		this.nameUsuario = name;
 		this.messageDialog = new MessageDialog();
@@ -49,7 +53,10 @@ public class PanelAmigos extends JPanel{
 		build();
 		refreshPanel();
 	}
-
+	
+	/**
+	 * Funcion para construir el panel
+	 */
 	 private void build(){
 		modeloListaAmigos = new DefaultListModel<String>();
 		lstAmigos = new JList<String>(modeloListaAmigos);
@@ -66,6 +73,9 @@ public class PanelAmigos extends JPanel{
 		borrarAmigos();
 	 }
 	 
+	 /**
+	  * Boton que abre una ventana para poder buscar amigos y añadirlos 
+	  */
 	 public void anadirAmigos(){
 		 btnaddAmigo.addActionListener(new ActionListener() {
 				
@@ -76,6 +86,10 @@ public class PanelAmigos extends JPanel{
 				}
 			});
 		}
+	 
+	 /**
+	  * Ventana para buscar amigos
+	  */
 	 private void ventanaBusqueda(){
 			ventana = new JFrame("Buscar Amigos");
 			JPanel centerPanel = new JPanel();
@@ -99,79 +113,93 @@ public class PanelAmigos extends JPanel{
 			ventana.setVisible(true);
 			
 	}
-	 
-		public void findAmigos(){
-			btnBuscar.addActionListener(new ActionListener() {
+	
+	/**
+	 * Boton para poder buscar amigos
+	 */
+	public void findAmigos(){
+		btnBuscar.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				listaUsuarios = s_ctrl.performFindFriends(txtFind.getText(),nameUsuario);
+				refresh();
+			}
+		});
+	}
+	
+	/**
+	 * Boton para añadir amigos en la lista del usuario logado
+	 */
+	public void anadriAmigos(){
+		btnAnadir.addActionListener(new ActionListener() {
 				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					listaUsuarios = s_ctrl.performFindFriends(txtFind.getText(),nameUsuario);
-					refresh();
-				}
-			});
-		}
-		
-		public void anadriAmigos(){
-			btnAnadir.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					String valor = lst.getSelectedValue();
-					if(valor!=null){
-						String parts[] = valor.split("   ");
-						String nameAmigo = parts[3].trim();
-						String ack = s_ctrl.performAsignarAmistad(nameUsuario,nameAmigo);
-						if(ack.equals("true")){
-							listaAmigosDe = s_ctrl.performListarAmigosDe(nameUsuario);
-							refreshPanel();
-							ventana.dispose();
-						}else{
-							messageDialog.reportMessage(ack);
-						}
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String valor = lst.getSelectedValue();
+				if(valor!=null){
+					String parts[] = valor.split("   ");
+					String nameAmigo = parts[3].trim();
+					String ack = s_ctrl.performAsignarAmistad(nameUsuario,nameAmigo);
+					if(ack.equals("true")){
+						listaAmigosDe = s_ctrl.performListarAmigosDe(nameUsuario);
+						refreshPanel();
+						ventana.dispose();
+					}else{
+						messageDialog.reportMessage(ack);
 					}
 				}
-			});
-		}
-		
-		public void borrarAmigos(){
-			btndeleteAmigo.addActionListener(new ActionListener() {
+			}
+		});
+	}
+	
+	/**
+	 * Boton para poder borrar amigos de la lista del usuario logado
+	 */
+	public void borrarAmigos(){
+		btndeleteAmigo.addActionListener(new ActionListener() {
 				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					String valor = lstAmigos.getSelectedValue();
-					if(valor!=null){
-						String parts[] = valor.split("   ");
-						String nameAmigo = parts[3].trim();
-						String ack = s_ctrl.performEliminarAmistad(nameUsuario,nameAmigo);
-						if(ack.equals("true")){
-							listaAmigosDe = s_ctrl.performListarAmigosDe(nameUsuario);
-							refreshPanel();
-						}else{
-							messageDialog.reportMessage(ack);
-						}
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String valor = lstAmigos.getSelectedValue();
+				if(valor!=null){
+					String parts[] = valor.split("   ");
+					String nameAmigo = parts[3].trim();
+					String ack = s_ctrl.performEliminarAmistad(nameUsuario,nameAmigo);
+					if(ack.equals("true")){
+						listaAmigosDe = s_ctrl.performListarAmigosDe(nameUsuario);
+						refreshPanel();
+					}else{
+						messageDialog.reportMessage(ack);
 					}
 				}
-			});
-		}
-		
-		public void refresh(){
-			String programLista[] = new String[listaUsuarios.size()];
-	    	modeloLista.clear();
-	        for (int i=0;i<listaUsuarios.size();i++){
-	        	programLista[i] = "   "+(i+1)+"-   Nombre:   "+listaUsuarios.get(i);
-	        	modeloLista.addElement(programLista[i]+"\n");
-	        }
-		}
-		
-		public void refreshPanel(){
-			String programLista[] = new String[listaAmigosDe.size()];
-			modeloListaAmigos.clear();
-	        for (int i=0;i<listaAmigosDe.size();i++){
-	        	programLista[i] = "   "+(i+1)+"-   Nombre:   "+listaAmigosDe.get(i);
+			}
+		});
+	}
+	
+	/**
+	 * Metodo para refrescar la lista de amigos
+	 */
+	public void refresh(){
+		String programLista[] = new String[listaUsuarios.size()];
+	   	modeloLista.clear();
+	       for (int i=0;i<listaUsuarios.size();i++){
+	    	   programLista[i] = "   "+(i+1)+"-   Nombre:   "+listaUsuarios.get(i);
+	           modeloLista.addElement(programLista[i]+"\n");
+	       }
+	}
+	
+	/**
+	 * Metodo para refrescar el panel de la lista de amigos
+	 */
+	public void refreshPanel(){
+		String programLista[] = new String[listaAmigosDe.size()];
+		modeloListaAmigos.clear();
+	    	for (int i=0;i<listaAmigosDe.size();i++){
+	    		programLista[i] = "   "+(i+1)+"-   Nombre:   "+listaAmigosDe.get(i);
 	        	modeloListaAmigos.addElement(programLista[i]+"\n");
 	        }
-		}
+	}
 }

@@ -1,31 +1,21 @@
 package es.ucm.abd.crossword.View.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
-
 import com.toedter.calendar.JCalendar;
 
-
+/**
+ * Clase para pintar un calendario
+ * @author Alberto y George
+ *
+ */
 public class PanelCalendar extends JPanel{
 	
-	
-	/**
-	 * 
-	 */
 	private JCalendar jc;
 	private JFrame ventana;
 	private static final long serialVersionUID = 1L;
@@ -37,6 +27,10 @@ public class PanelCalendar extends JPanel{
 	private JLabel lblFechaTitulo;
 	private JLabel lblFechaDatos;
 
+	/**
+	 * La constructora recibe la fecha de naciemiento actual del usuario logado por si la quiere cambiar
+	 * @param fecha la fecha de nacimiento del usuario logado
+	 */
 	public PanelCalendar(String fecha){
 		jc = new JCalendar();
 		up = new UserPanel();
@@ -78,6 +72,9 @@ public class PanelCalendar extends JPanel{
 		ventana.setVisible(true);
 	}
 	
+	/**
+	 * Boton para acceptar el cambio de de fecha de nacimiento
+	 */
 	public void aceptar(){
 		btnAceptar.addActionListener(new ActionListener() {
 
@@ -86,7 +83,6 @@ public class PanelCalendar extends JPanel{
 				// TODO Auto-generated method stub
 				int year = jc.getYearChooser().getYear();
 				String fechaNueva="";
-				//System.out.println(jc.getYearChooser().getYear() + "-" + (jc.getMonthChooser().getMonth()+1) + "-" + jc.getDayChooser().getDay());
 				if(year>1900 && year<2016){
 					fechaNueva = jc.getYearChooser().getYear() + "-" + (jc.getMonthChooser().getMonth()+1) + "-" + jc.getDayChooser().getDay();
 					up.setFecha(fechaNueva);
