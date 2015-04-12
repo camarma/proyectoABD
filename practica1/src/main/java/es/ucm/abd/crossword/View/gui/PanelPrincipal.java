@@ -5,6 +5,11 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.TitledBorder;
 
+/**
+ * Clase encargada de mostrar el panel principal para jugar, buscar amigos o ayudar al amigo en caso de que el lo solicite
+ * @author Alberto y George
+ *
+ */
 public class PanelPrincipal  extends JPanel{
 
 	private static final long serialVersionUID = 1L;

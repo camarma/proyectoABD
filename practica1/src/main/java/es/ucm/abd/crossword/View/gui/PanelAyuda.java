@@ -13,14 +13,15 @@ import javax.swing.table.AbstractTableModel;
 
 import es.ucm.abd.crossword.Controller.Controller;
 import es.ucm.abd.crossword.Model.Palabra;
-import es.ucm.abd.crossword.Model.Usuario;
 
+/**
+ * Clase para mostrar el panel de peticiones de ayuda
+ * @author Alberto y George
+ *
+ */
 public class PanelAyuda extends JPanel{
 
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JScrollPane scroll;
 	private ModeloTabla modelo;
@@ -36,6 +37,10 @@ public class PanelAyuda extends JPanel{
 	private String titulo = "";
 	private String usrAyudado = "";
 	
+	/**
+	 * La costructora que la llega el nombre del usuario logado
+	 * @param name el nombre del usuario logado
+	 */
 	public PanelAyuda(String name){
 		this.nameUsuario = name;
 		s_ctrl = new Controller();
@@ -45,7 +50,9 @@ public class PanelAyuda extends JPanel{
 	
 	}
 		
-	
+	/**
+	 * Funcion para construir el panel
+	 */
 	private void build(){
 		// Crear la tabla con un modelo personalizado
 		modelo = new ModeloTabla();
@@ -58,10 +65,13 @@ public class PanelAyuda extends JPanel{
 		add(openCrucigrama);
 		botonAbrirCrucigrama();
 		add(deletePeticion);
-		botonEliminarPEticion();
+		botonEliminarPeticion();
 
 	}
 	
+	/**
+	 * Boton para abrir el crucigrama seleccionado del amigo que haya pedido la ayuda
+	 */
 	private void botonAbrirCrucigrama(){
 		openCrucigrama.addActionListener(new ActionListener() {
 		
@@ -84,7 +94,10 @@ public class PanelAyuda extends JPanel{
 		});
 	}
 	
-	private void botonEliminarPEticion(){
+	/**
+	 * Boton para Eliminar la Peticion 
+	 */
+	private void botonEliminarPeticion(){
 		deletePeticion.addActionListener(new ActionListener() {
 		
 			@Override
@@ -106,10 +119,18 @@ public class PanelAyuda extends JPanel{
 		});
 	}
 	
+	/**
+	 * Metodo para refrescar la vista
+	 */
 	void refreshView() {
 		modelo.refresh();
 	}
 	
+	/**
+	 * Clase para crear el model de la tabla
+	 * @author Alberto y George
+	 *
+	 */
 	private class ModeloTabla extends AbstractTableModel {
 		
 		
@@ -119,56 +140,55 @@ public class PanelAyuda extends JPanel{
 		
 		/**
 		 * Constructora que llama al metodo refrescar
-	 */
-	ModeloTabla() {
-		refresh();
-	}
-	
-	/**
-	 * metodo encargado de repintar la tabla con los nuevos valores
-	 */
-	public void refresh() {
-		this.fireTableDataChanged();
-	}
-
-	/**
-	 * metodo encargado de recoger el nombre de la columna
-	 */
-	public String getColumnName(int column){
-		return colNames[column];
-	}
-
-	/**
-	 * metodo que devuelve el numero de columnas
-	 */
-	@Override
-	public int getColumnCount() {
-		return 2;
-	}
-	
-	/**
-	 * metodo encargado de devolver el numero de celdas
-	 */
-	@Override
-	public int getRowCount() {
-		if(listaPeticiones == null){
-			return 0;
+		 */
+		ModeloTabla() {
+			refresh();
 		}
-		else{
-			return listaPeticiones.size();
+	
+		/**
+		 * metodo encargado de repintar la tabla con los nuevos valores
+		 */
+		public void refresh() {
+			this.fireTableDataChanged();
+		}
+	
+		/**
+		 * metodo encargado de recoger el nombre de la columna
+		 */
+		public String getColumnName(int column){
+			return colNames[column];
+		}
+	
+		/**
+		 * metodo que devuelve el numero de columnas
+		 */
+		@Override
+		public int getColumnCount() {
+			return 2;
+		}
+		
+		/**
+		 * metodo encargado de devolver el numero de celdas
+		 */
+		@Override
+		public int getRowCount() {
+			if(listaPeticiones == null){
+				return 0;
+			}
+			else{
+				return listaPeticiones.size();
+			}
+		}
+	
+		/**
+		 * metodo encargado de pintar la tabla con las columnas y filas de la tabla 
+		 */
+		@Override
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			if(columnIndex==0)
+				return listaPeticiones.get(rowIndex).split(":")[0];
+			else
+				return listaPeticiones.get(rowIndex).split(":")[1];
 		}
 	}
-
-	/**
-	 * metodo encargado de pintar la tabla con las columnas y filas de la tabla 
-	 */
-	@Override
-	public Object getValueAt(int rowIndex, int columnIndex) {
-		if(columnIndex==0)
-			return listaPeticiones.get(rowIndex).split(":")[0];
-		else
-			return listaPeticiones.get(rowIndex).split(":")[1];
-	}
-}
-	
 }

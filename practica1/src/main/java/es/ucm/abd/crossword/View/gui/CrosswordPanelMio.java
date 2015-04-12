@@ -30,6 +30,11 @@ import es.ucm.abd.crossword.Controller.Controller;
 import es.ucm.abd.crossword.Model.ContienePalabra;
 import es.ucm.abd.crossword.Model.Palabra;
 
+/**
+ * Clase encargada de mostrar el Crucigrama elegido y jugar
+ * @author Alberto y George
+ *
+ */
 public class CrosswordPanelMio extends JFrame{
 	
 	private ArrayList<Palabra> listWord;
@@ -51,6 +56,7 @@ public class CrosswordPanelMio extends JFrame{
 	private String tituloCruci;
 	private String fecha;
 	private int numLetras;
+	@SuppressWarnings("unused")
 	private UserPanel up;
 	final private String src = "img/no_foto.png";
 	private JFrame ventana;
@@ -64,11 +70,18 @@ public class CrosswordPanelMio extends JFrame{
 	private ArrayList<String> listaRespuestas;
 	private String userAyudado="";
 	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * la costructora le llega los elementos necesarios para poder cargar el crucigrama 
+	 * @param listWord la lista de palabras
+	 * @param nameUsuario nombre del usuario logado
+	 * @param tituloCruci el titulo del crucigrama a realizar
+	 * @param listaRespuestas la lista de las respuestas del crucigrama
+	 * @param ayuda una booleana para ver si se esta ayudando o no
+	 * @param userAyudado el nombre del usuario que ayuda
+	 */
 	public CrosswordPanelMio(ArrayList<Palabra> listWord, String nameUsuario, String tituloCruci, ArrayList<String> listaRespuestas, boolean ayuda,String userAyudado){
 		super(tituloCruci);
 		this.messageDialog = new MessageDialog();
@@ -157,9 +170,175 @@ public class CrosswordPanelMio extends JFrame{
 		this.setSize(700, 900);	
 	}
 	
+	/**
+	 * Boton para insertar la respuesta de la palabra del crucigrama
+	 */
+	private void botonAceptar(){
+		btnAccept.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				boolean correcto=false;
+				int index = 0;
+				if(txtRespuesta.getText().equals("")){
+					messageDialog.reportMessage("false:Debes escribir una respuesta.");
+				}else{
+					index = comparacion();
+					if(txtRespuesta.getText().toUpperCase().equals(palabra)){
+						panel.showWord(lista.get(index));
+						correcto=true;
+						
+					}else{
+						messageDialog.reportMessage("false:La respuesta "+txtRespuesta.getText()+" es incorrecta.");
+						correcto=false;
+					}
+					fecha= getFechaActual();
+					s_ctrl.insertarRespuesta(nameUsuario,userAyudado, tituloCruci, listWord.get(index).getId(), txtRespuesta.getText(), correcto, fecha);
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Boton para enviar peticion a un amigo
+	 */
+	private void enviarPeticion(){
+		btnAyuda.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				ventanaAmigos();
+			}});
+	}
+	
+	/**
+	 * Meotod para comparar si la palabra se ha acertado o no
+	 * @return devuelve el indice de la palabra en caso que concida con la palabra insertada
+	 */
+	private int comparacion(){
+		int i=0;
+		while(i< lista.size()){
+			if(lista.get(i).getWord().toUpperCase().equals(palabra)){
+				return i;
+			}
+			i++;
+		}
+		return -1;
+	}
+	
+	/**
+	 * Metodo que devuelve a fecha actual
+	 * @return la fecha actual
+	 */
+	private static String getFechaActual() {
+	    Date ahora = new Date();
+	    SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd- hh:mm:ss");
+	    return formateador.format(ahora);
+	}
+	
+	/**
+	 * Metodo que devuelva las respuestas
+	 */
+	private void cargarRespuestas(){
+		if(!ayuda){
+			listaRespCorrectas = s_ctrl.cargarRespuestas(nameUsuario, tituloCruci);
+		}else{
+			listaRespCorrectas = listaRespuestas;
+		}
+		for(int i=0; i < listaRespCorrectas.size(); i++){
+			for(int j=0;j <lista.size(); j++){
+				if(listaRespCorrectas.get(i).toUpperCase().equals(lista.get(j).getWord())){
+					panel.showWord(lista.get(j));
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Metodo para bloquear textos y botones
+	 */
+	private void bloquearTextos(){
+		txtRespuesta.setEnabled(false);
+		btnAccept.setEnabled(false);
+		btnAyuda.setEnabled(false);	
+	}
+	
+	/**
+	 * Metodo para desbloquear textos y botones
+	 */
+	private void desbloquearTextos(){
+		txtRespuesta.setEnabled(true);
+		btnAccept.setEnabled(true);
+		btnAyuda.setEnabled(true);	
+	}
+	
+	/**
+	 * Metodo que abre un ventana de amigo
+	 */
+	private void ventanaAmigos(){
+		ventana = new JFrame("Buscar Amigos");
+		JPanel centerPanel = new JPanel();
+		modeloLista = new DefaultListModel<String>();
+		lst = new JList<String>(modeloLista);
+		scroll = new JScrollPane(lst);
+		scroll.setPreferredSize(new Dimension(500, 500));
+		lst.setFont(new Font("Courier",Font.PLAIN,16));
+		pintarLista();
+		btnEnviar = new JButton("Enviar");
+		centerPanel.add(scroll);
+		centerPanel.add(btnEnviar);
+		solicitarAyuda();
+		ventana.add(centerPanel, BorderLayout.CENTER);
+		ventana.setSize(500, 740);
+		ventana.setVisible(true);
+		
+	}
+	
+	/**
+	 * Metodo para pintar la lista de los amigos
+	 */
+	public void pintarLista(){
+		String programLista[] = new String[listaAmigosDe.size()];
+    	modeloLista.clear();
+        for (int i=0;i<listaAmigosDe.size();i++){
+        	programLista[i] = "   "+(i+1)+"-   Nombre:   "+listaAmigosDe.get(i);
+        	modeloLista.addElement(programLista[i]+"\n");
+        }
+	}
+	
+	/**
+	 * Boton para solicitar ayuda
+	 */
+	private void solicitarAyuda(){
+		btnEnviar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				s_ctrl.performPeticion(nameUsuario,lst.getSelectedValue().split("   ")[3].trim(),tituloCruci);
+				ventana.dispose();
+				bloquearTextos();
+				bloqueanel();
+				
+			}});
+	}
+	
+	/**
+	 * Metodo que bloquea el panel en caso de pedir ayuda
+	 */
+	private void bloqueanel(){
+		bloqueado = true;
+	}
+	
+	/**
+	 * Clase queimplement Crospanel para interactuar con la vista del crucigrama
+	 */
 	private void claseSelect() {
 		// Registramos los manejadores de eventos del CrosswordPanel
         panel.addEventListener(new CrosswordPanelEventListener<ContienePalabra>() {
+        	
+        	/**
+        	 * Metodo para seleccionar una palabra del crucigrama
+        	 */
             public void wordSelected(CrosswordPanel<ContienePalabra> source, ContienePalabra newWord) {
             	int cont=0;
             	numLetras = newWord.getWord().length();
@@ -189,7 +368,10 @@ public class CrosswordPanelMio extends JFrame{
 				}
 				palabra = newWord.getWord();
             }
-
+            
+            /**
+             * Metodo para determinar la celda selecionada
+             */
             public void cellSelected(CrosswordPanel<ContienePalabra> source, Point newCell) {
                 if (newCell != null) {
             		lblfoto.setIcon(new ImageIcon(Login.class.getResource(src)));
@@ -199,136 +381,15 @@ public class CrosswordPanelMio extends JFrame{
                     bloquearTextos();
                 }
             }
-
+            
+            /**
+             *  Metodo para la desselecion de la celda
+             */
             public void deselected(CrosswordPanel<ContienePalabra> source) {
             	bloquearTextos();
             }
         });
 		
-	}
-
-
-	private void botonAceptar(){
-		btnAccept.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				boolean correcto=false;
-				int index = 0;
-				if(txtRespuesta.getText().equals("")){
-					messageDialog.reportMessage("false:Debes escribir una respuesta.");
-				}else{
-					index = comparacion();
-					if(txtRespuesta.getText().toUpperCase().equals(palabra)){
-						panel.showWord(lista.get(index));
-						correcto=true;
-						
-					}else{
-						messageDialog.reportMessage("false:La respuesta "+txtRespuesta.getText()+" es incorrecta.");
-						correcto=false;
-					}
-					fecha= getFechaActual();
-					s_ctrl.insertarRespuesta(nameUsuario,userAyudado, tituloCruci, listWord.get(index).getId(), txtRespuesta.getText(), correcto, fecha);
-				}
-			}
-		});
-	}
-	
-	private void enviarPeticion(){
-		btnAyuda.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				ventanaAmigos();
-			}});
-	}
-	
-	private int comparacion(){
-		int i=0;
-		while(i< lista.size()){
-			if(lista.get(i).getWord().toUpperCase().equals(palabra)){
-				return i;
-			}
-			i++;
-		}
-		return -1;
-	}
-	
-	private static String getFechaActual() {
-	    Date ahora = new Date();
-	    SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd- hh:mm:ss");
-	    return formateador.format(ahora);
-	}
-	
-	private void cargarRespuestas(){
-		if(!ayuda){
-			listaRespCorrectas = s_ctrl.cargarRespuestas(nameUsuario, tituloCruci);
-		}else{
-			listaRespCorrectas = listaRespuestas;
-		}
-		for(int i=0; i < listaRespCorrectas.size(); i++){
-			for(int j=0;j <lista.size(); j++){
-				if(listaRespCorrectas.get(i).toUpperCase().equals(lista.get(j).getWord())){
-					panel.showWord(lista.get(j));
-				}
-			}
-		}
-	}
-	
-	private void bloquearTextos(){
-		txtRespuesta.setEnabled(false);
-		btnAccept.setEnabled(false);
-		btnAyuda.setEnabled(false);	
-	}
-	
-	private void desbloquearTextos(){
-		txtRespuesta.setEnabled(true);
-		btnAccept.setEnabled(true);
-		btnAyuda.setEnabled(true);	
-	}
-	
-	private void ventanaAmigos(){
-		ventana = new JFrame("Buscar Amigos");
-		JPanel centerPanel = new JPanel();
-		modeloLista = new DefaultListModel<String>();
-		lst = new JList<String>(modeloLista);
-		scroll = new JScrollPane(lst);
-		scroll.setPreferredSize(new Dimension(500, 500));
-		lst.setFont(new Font("Courier",Font.PLAIN,16));
-		pintarLista();
-		btnEnviar = new JButton("Enviar");
-		centerPanel.add(scroll);
-		centerPanel.add(btnEnviar);
-		solicitarAyuda();
-		ventana.add(centerPanel, BorderLayout.CENTER);
-		ventana.setSize(500, 740);
-		ventana.setVisible(true);
-		
-	}
-	
-	public void pintarLista(){
-		String programLista[] = new String[listaAmigosDe.size()];
-    	modeloLista.clear();
-        for (int i=0;i<listaAmigosDe.size();i++){
-        	programLista[i] = "   "+(i+1)+"-   Nombre:   "+listaAmigosDe.get(i);
-        	modeloLista.addElement(programLista[i]+"\n");
-        }
-	}
-	
-	private void solicitarAyuda(){
-		btnEnviar.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				s_ctrl.performPeticion(nameUsuario,lst.getSelectedValue().split("   ")[3].trim(),tituloCruci);
-				ventana.dispose();
-				bloquearTextos();
-				bloqueanel();
-				
-			}});
-	}
-	private void bloqueanel(){
-		bloqueado = true;
 	}
 	
 }
