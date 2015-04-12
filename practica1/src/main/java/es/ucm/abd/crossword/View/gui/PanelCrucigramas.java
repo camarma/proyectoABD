@@ -3,6 +3,7 @@ package es.ucm.abd.crossword.View.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ public class PanelCrucigramas extends JPanel{
 	private JFrame ventana;
 	private JButton btnAnadir;
 	private JButton btnBuscar;
+	private JButton btnEtiqueta;
+	private JTextField txtEtiqueta;
 	private JTextField txtFind;
 	private JList<String> lstCrucigramas;
 	private DefaultListModel<String> modeloLista;
@@ -135,9 +138,14 @@ public class PanelCrucigramas extends JPanel{
 		btnAnadir = new JButton("Anadir");
 		btnBuscar = new JButton("Buscar");
 		txtFind = new JTextField(30);
+		btnEtiqueta = new JButton("Filtrar por etiqueta");
+		txtEtiqueta = new JTextField(30);
 		centerPanel.add(txtFind);
 		centerPanel.add(btnBuscar);
+		centerPanel.add(txtEtiqueta);
+		centerPanel.add(btnEtiqueta);
 		findCrucigramas();
+		findEtiqueta();
 		centerPanel.add(scroll);
 		centerPanel.add(btnAnadir);
 		anadirCrucigramas();
@@ -180,6 +188,22 @@ public class PanelCrucigramas extends JPanel{
 				// TODO Auto-generated method stub
 				listaCrucigramasFiltrados = s_ctrl.performFindCrucigrama(txtFind.getText());
 				refresh();
+			}
+		});
+	}
+	
+	public void findEtiqueta(){
+		btnEtiqueta.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(txtEtiqueta.getText().equals("")){
+					m_Dialog.reportMessage("false:Debes escribir una etiqueta.");
+				}else{
+					listaCrucigramasFiltrados = s_ctrl.performFindEtuiqueta(txtEtiqueta.getText());
+					refresh();
+				}
 			}
 		});
 	}

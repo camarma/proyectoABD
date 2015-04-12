@@ -1,5 +1,6 @@
 package es.ucm.abd.crossword.Controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -170,11 +171,12 @@ public class Controller {
 	 * @param edad -> fecha nueva
 	 * @return resultado de la operacion
 	 */
-	public String performModificarDatos(String name,String pass,Date edad){
+	public String performModificarDatos(String name,String pass,Date edad, byte[] byteAvatar){
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
 		String ack="";
 		boolean edadOK = false;
 		boolean passOK = false;
+		boolean fileOK = false;
 		if(!pass.equals("")){
 			ack = usuarioMapper.updatePassword(name, pass);
 			if(ack.split(":")[0].equals("true")){
@@ -185,6 +187,12 @@ public class Controller {
 			ack = usuarioMapper.updateEdad(name, edad);
 			if(ack.split(":")[0].equals("true")){
 				edadOK=true;
+			}
+		}
+		if(byteAvatar != null){
+			ack = usuarioMapper.updateFoto(name, byteAvatar);
+			if(ack.split(":")[0].equals("true")){
+				fileOK=true;
 			}
 		}
 		if(passOK && edadOK){
@@ -295,5 +303,12 @@ public class Controller {
 		UsuarioMapper usuarioMapper = new UsuarioMapper(ds);
 		String ack = usuarioMapper.EliminarPeticion(nameUsuario, titulo, usrAyudado);
 		return ack;	
+	}
+
+	public ArrayList<Integer> performFindEtuiqueta(String filter) {
+		// TODO Auto-generated method stub
+		CrucigramaMapper crucigramaMapper = new CrucigramaMapper(ds);
+		ArrayList<Integer> resultado = crucigramaMapper.getCrucigramasByEtiqueta(filter);
+		return resultado;
 	}
 }

@@ -1,5 +1,6 @@
 package es.ucm.abd.crossword.Model;
 
+import java.io.File;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -175,9 +176,9 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 			pst.setObject(2,nombre);
 			try {
 				pst.executeUpdate();
-				return mensaje = "true:"+nombre+" tu contrasena ha sido restaurada correctamente.";
+				return mensaje = "true:"+nombre+" tu contraseña ha sido actualizada correctamente.";
 			} catch (Exception e) {
-				return mensaje = "false:Contrasena no restaurada";
+				return mensaje = "false:Contrasena no actualizada";
 			}
 				
 		} catch (SQLException e) {
@@ -434,9 +435,9 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 			pst.setObject(2,nombre);
 			try {
 				pst.executeUpdate();
-				return mensaje = "true:"+nombre+" tu fecha de nacimiento ha sido restaurada correctamente.";
+				return mensaje = "true:"+nombre+" tu fecha de nacimiento ha sido actualizada correctamente.";
 			} catch (Exception e) {
-				return mensaje = "false:Contrasena no restaurada";
+				return mensaje = "false:Fecha nacimiento no actualizada";
 			}
 				
 		} catch (SQLException e) {
@@ -767,6 +768,30 @@ public class UsuarioMapper extends AbstractMapper<Usuario, Integer> {
 				return mensaje = "true";
 			} catch (Exception e) {
 				return mensaje = "false:Error al eliminar amigo";
+			}
+				
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return mensaje;
+		}
+	}
+
+	public String updateFoto(String name, byte[] byteAvatar) {
+		// TODO Auto-generated method stub
+		String mensaje="false:Error base de datos";
+		String tableName = getTableName();
+		String sql = "UPDATE "+ tableName + " SET `Avatar`=? WHERE `Nombre`=?";
+		
+		try (Connection con = ds.getConnection();
+			 PreparedStatement pst = con.prepareStatement(sql)) {
+			
+			pst.setObject(1,byteAvatar);
+			pst.setObject(2,name);
+			try {
+				pst.executeUpdate();
+				return mensaje = "true:Datos actualizados";
+			} catch (Exception e) {
+				return mensaje = "false:Avatar no restaurada";
 			}
 				
 		} catch (SQLException e) {

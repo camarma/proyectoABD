@@ -191,4 +191,27 @@ public class CrucigramaMapper extends AbstractMapper<Crucigrama, Integer>{
 		}
 	}
 
+	public ArrayList<Integer> getCrucigramasByEtiqueta(String filter) {
+		// TODO Auto-generated method stub
+		ArrayList<Integer> idCruci = new ArrayList<Integer>();
+		String sql = "SELECT c.`Id` "
+				+ " FROM crucigramas as c, palabras as p, etiquetas as e, tener_etiqueta te, contiene_palabra as cp "
+				+ " WHERE c.`Id` = cp.`Id_crucigrama` and p.`Id`=te.`Id_palabra` and e.`Id`=te.`Id_etiqueta` and p.`Id`=cp.`Id_palabra` and e.`Descripcion` LIKE '%' ? '%'";
+		try (Connection con = ds.getConnection();
+			 PreparedStatement pst = con.prepareStatement(sql)) {
+			
+			pst.setObject(1, filter);
+			
+			try(ResultSet rs = pst.executeQuery()) {
+				while (rs.next()) {
+					idCruci.add(rs.getInt("Id"));
+				} 
+				return idCruci;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }

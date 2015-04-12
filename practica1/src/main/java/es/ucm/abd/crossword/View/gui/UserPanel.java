@@ -5,12 +5,20 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -62,6 +70,9 @@ public class UserPanel  extends JPanel{
 	final private String src_editar = "img/edit.png";
 	final private String src_calendar = "img/calendar.png";
 	final private String src_addavatar = "img/addAvatar.png";
+	private JFileChooser fc;
+	private static File fileAvatar;
+	private static byte [] byteAvatar;
 	
 
 	/**
@@ -71,6 +82,7 @@ public class UserPanel  extends JPanel{
 	 */
 	@SuppressWarnings("static-access")
 	public UserPanel(Usuario data, Integer puntuacion){
+		this.fc = new JFileChooser();
 		this.s_ctrl = new Controller();
 		this.messageDialog = new MessageDialog();
 		this.usuario = data;
@@ -79,6 +91,11 @@ public class UserPanel  extends JPanel{
 		if(usuario.getFechaNacimiento()!=null)
 			tieneFecha = true;	
 		build();
+		if(fileAvatar!=null){
+			new ImageIcon(usuario.getFoto());
+		}else{
+			
+		}
 	}
 	
 	/**
@@ -222,6 +239,7 @@ public class UserPanel  extends JPanel{
 		modificar();
 		cancelar();
 		calendario();
+		avatar();
 		ventana.add(datos,BorderLayout.CENTER);
 		ventana.setSize(500, 280);
 		ventana.setVisible(true);
@@ -238,7 +256,7 @@ public class UserPanel  extends JPanel{
 			private String ack="";
 			private boolean passOK = false;
 			private boolean fechaOK = false;
-			
+			private boolean fileOK = false;
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -255,6 +273,8 @@ public class UserPanel  extends JPanel{
 					}
 					if(fechaNueva.equals("") && tieneFecha){
 						fechaOK = false;
+					}if(byteAvatar!=null){
+						fileOK = true;
 					}else{
 						fechaOK = true;
 					}
@@ -262,6 +282,7 @@ public class UserPanel  extends JPanel{
 				if(passOK){
 					pass = txtPassNew.getText();
 				}
+
 				if(fechaOK){
 					try {
 						edad = formato.parse(fechaNueva);
@@ -270,8 +291,9 @@ public class UserPanel  extends JPanel{
 						e1.printStackTrace();
 					}
 				}
-				if(passOK || fechaOK){
-					ack = s_ctrl.performModificarDatos(usuario.getNombre(), pass, edad);
+				if(passOK || fechaOK || fileOK){
+					ack = s_ctrl.performModificarDatos(usuario.getNombre(), pass, edad,byteAvatar);
+					refreshAvatar();
 					messageDialog.reportMessage(ack);
 				}
 			
@@ -321,11 +343,29 @@ public class UserPanel  extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
+				//Handle open button action.
+			    if (e.getSource() == btnAvatar) {
+			    	int returnVal = fc.showOpenDialog(null);
+			        if (returnVal == JFileChooser.APPROVE_OPTION) {
+			            File file = fc.getSelectedFile();
+			            //This is where a real application would open the file.
+			            System.out.println("Opening: " + file.getPath());
+			            fileAvatar = new File(file.getName());
+			            try {
+							byteAvatar = Files.readAllBytes(file.toPath());
+						} catch (IOException e2) {
+							// TODO Auto-generated catch block
+							e2.printStackTrace();
+						}
+			            
+			        } else {
+			        	messageDialog.reportMessage("false:error");
+			        }
+			   } 
 			}
 		});
 	}
-	
+
 	/**
 	 * metodo para actualizar a fecha
 	 * @param fecha la nueva fecha
@@ -366,5 +406,9 @@ public class UserPanel  extends JPanel{
 	public void refreshPuntuacion(Integer puntuacion) {
 		// TODO Auto-generated method stub
 		this.lblpuntos.setText("Puntos: "+puntuacion+" puntos");
+	}
+	
+	public void refreshAvatar(){
+		this.lblfoto.setIcon(new ImageIcon(byteAvatar));
 	}
 }
