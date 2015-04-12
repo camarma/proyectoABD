@@ -21,10 +21,14 @@ import javax.swing.border.TitledBorder;
 import es.ucm.abd.crossword.Controller.Controller;
 import es.ucm.abd.crossword.Model.Usuario;
 
+/**
+ * Clase encargada de mostrar los datos del usuario y modificarlos
+ * @author Alberto y George
+ *
+ */
 public class UserPanel  extends JPanel{
 
 	private static final long serialVersionUID = 1L;
-	;
 
 	private JLabel lblfoto;  
 	private JLabel lblnombre;  
@@ -58,9 +62,12 @@ public class UserPanel  extends JPanel{
 	final private String src_editar = "img/edit.png";
 	final private String src_calendar = "img/calendar.png";
 	final private String src_addavatar = "img/addAvatar.png";
+	
+
 	/**
-	 * Constructora para inicializar el toolbar panel con sus botones y llamar al metodo build
-	 * @param gui recibe como entrada al controlador
+	 * La constructora recibe los datos del usuario y su puntuacion
+	 * @param data datos del usuario 
+	 * @param puntuacion la puntuacion del usuario
 	 */
 	@SuppressWarnings("static-access")
 	public UserPanel(Usuario data, Integer puntuacion){
@@ -73,7 +80,12 @@ public class UserPanel  extends JPanel{
 			tieneFecha = true;	
 		build();
 	}
+	
+	/**
+	 * Costructora vacia
+	 */
 	public UserPanel(){
+		
 	}
 	
 	/**
@@ -119,6 +131,10 @@ public class UserPanel  extends JPanel{
 	    
 	}
 	
+	/**
+	 * metodo quue calcule la edad el usuario
+	 * @return devuelve la edad calculada
+	 */
 	private String calculateAge(){
 		
 		Date fechaActual = new Date();
@@ -141,6 +157,9 @@ public class UserPanel  extends JPanel{
 		return String.valueOf(anos);
 	}
 	
+	/**
+	 * Boton de editar datos
+	 */
 	public void editar(){
 		btnEdit.addActionListener(new ActionListener() {
 			
@@ -152,7 +171,10 @@ public class UserPanel  extends JPanel{
 		});
 	}
 	
-	 private void ventanaEditar(){
+	/**
+	 * Metodo que abre la ventana de editar la informacion
+	 */
+	private void ventanaEditar(){
 		JPanel panelCalendar = new JPanel();
 		JPanel panelAvatar = new JPanel();
 		ventana = new JFrame("Editar datos");
@@ -199,7 +221,10 @@ public class UserPanel  extends JPanel{
 		ventana.setSize(500, 280);
 		ventana.setVisible(true);
 	}
-	 
+	
+	/**
+	 * Boton para modificar los datos que el usuario quiera cambiar
+	 */
 	public void modificar(){
 		btnModificar.addActionListener(new ActionListener() {
 			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
@@ -249,6 +274,9 @@ public class UserPanel  extends JPanel{
 		});
 	}
 	
+	/**
+	 * Boton para salir de la ventana de modificar
+	 */
 	public void cancelar(){
 		btnCancelar.addActionListener(new ActionListener() {
 
@@ -260,6 +288,9 @@ public class UserPanel  extends JPanel{
 		});
 	}
 	
+	/**
+	 * boton para abrir un calendario para eligir la fecha de nacimiento
+	 */
 	public void calendario(){
 		btnCalendar.addActionListener(new ActionListener() {
 
@@ -276,6 +307,9 @@ public class UserPanel  extends JPanel{
 		});
 	}
 	
+	/**
+	 * boton para modificar avatar
+	 */
 	public void avatar(){
 		btnAvatar.addActionListener(new ActionListener() {
 
@@ -286,12 +320,22 @@ public class UserPanel  extends JPanel{
 			}
 		});
 	}
-	 
+	
+	/**
+	 * metodo para actualizar a fecha
+	 * @param fecha la nueva fecha
+	 */
 	@SuppressWarnings("static-access")
 	protected void setFecha(String fecha){
 		this.fechaNueva = fecha;
 	}
 	
+	/**
+	 * metodo para validar la contraseña modificada
+	 * @param passN la nueva contraseña
+	 * @param passR la confirmacion de la nueva contraseña
+	 * @return
+	 */
 	private boolean validaPass(String passN, String passR){
 		boolean passOK = false;
 		if (passN.equals(passR)){
