@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -45,17 +46,23 @@ public class UserPanel  extends JPanel{
 	private Controller s_ctrl;
 	private MessageDialog messageDialog;
 	private JButton btnCalendar;
+	@SuppressWarnings("unused")
 	private PanelCalendar pc;
 	private static String fechaNueva ="";
 	private boolean tieneFecha=false;
 	private JButton btnAvatar;
 	private JLabel lblAvatar;
+	@SuppressWarnings("unused")
 	private static String nombre; 
-	
+	final private String src_avatar = "img/avatar.png"; 
+	final private String src_editar = "img/edit.png";
+	final private String src_calendar = "img/calendar.png";
+	final private String src_addavatar = "img/addAvatar.png";
 	/**
 	 * Constructora para inicializar el toolbar panel con sus botones y llamar al metodo build
 	 * @param gui recibe como entrada al controlador
 	 */
+	@SuppressWarnings("static-access")
 	public UserPanel(Usuario data, Integer puntuacion){
 		this.s_ctrl = new Controller();
 		this.messageDialog = new MessageDialog();
@@ -73,33 +80,31 @@ public class UserPanel  extends JPanel{
 	 * metodo encargado de construir el panel
 	 */
 	private void build(){
+		
 		setBorder(new TitledBorder("Usuario"));
 		setLayout(new BorderLayout());
 		JPanel panelFoto = new JPanel();
-		//add(panelFoto);
 		JPanel panelDatos = new JPanel(new GridLayout(3,0));
-		//add(panelDatos);
 		JPanel panelEdit = new JPanel();
-		//add
 	      
 	    this.lblfoto = new JLabel();
 	    if(usuario.getFoto()!=null){
 		    this.lblfoto.setIcon(new ImageIcon(usuario.getFoto()));
 	    }else{
-		    this.lblfoto.setIcon(new ImageIcon(Login.class.getResource("img/success.png")));
+		    this.lblfoto.setIcon(new ImageIcon(Login.class.getResource(src_avatar)));
 	    }
 	    
 	    this.lblnombre = new JLabel("Nombre: "+usuario.getNombre());
 	   	    
 	    if(usuario.getFechaNacimiento()!=null){
-	    	this.lbledad = new JLabel("Edad: "+calculateAge()+" anos");
+	    	this.lbledad = new JLabel("Edad: "+calculateAge()+" años");
 	    }else{
 	    	this.lbledad = new JLabel("Edad: "+"Sin especificar");
 	    }
 	    	
 	    this.lblpuntos = new JLabel("Puntos: "+this.puntos+" puntos");
 	    
-	    this.btnEdit = new JButton(new ImageIcon(Login.class.getResource("img/edit.png")));
+	    this.btnEdit = new JButton(new ImageIcon(Login.class.getResource(src_editar)));
 	    this.btnEdit.setPreferredSize(new Dimension(50, 50));
 	    
 	    panelFoto.add(lblfoto);
@@ -115,6 +120,7 @@ public class UserPanel  extends JPanel{
 	}
 	
 	private String calculateAge(){
+		
 		Date fechaActual = new Date();
 		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
 		String hoy = formato.format(fechaActual);
@@ -162,9 +168,9 @@ public class UserPanel  extends JPanel{
 		lblAvatar = new JLabel("Avatar:");
 		btnModificar = new JButton("Modificar");
 		btnCancelar = new JButton("Cancelar");
-		btnCalendar = new JButton(new ImageIcon(Login.class.getResource("img/calendar.png")));
+		btnCalendar = new JButton(new ImageIcon(Login.class.getResource(src_calendar)));
 		btnCalendar.setPreferredSize(new Dimension(30, 30));
-		btnAvatar = new JButton(new ImageIcon(Login.class.getResource("img/addAvatar.png")));
+		btnAvatar = new JButton(new ImageIcon(Login.class.getResource(src_addavatar)));
 		btnAvatar.setPreferredSize(new Dimension(30, 30));
 		lblName = new JLabel(usuario.getNombre());
 		txtPassNew = new JPasswordField();
@@ -281,6 +287,7 @@ public class UserPanel  extends JPanel{
 		});
 	}
 	 
+	@SuppressWarnings("static-access")
 	protected void setFecha(String fecha){
 		this.fechaNueva = fecha;
 	}

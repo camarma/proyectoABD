@@ -21,12 +21,13 @@ import es.ucm.abd.crossword.Controller.Controller;
 import es.ucm.abd.crossword.Model.Crucigrama;
 import es.ucm.abd.crossword.Model.Palabra;
 
+/**
+ * Clase Encargada de pintar la lista de crucigramas activos e interactuar con ellas
+ * @author Alberto y George
+ *
+ */
 public class PanelCrucigramas extends JPanel{
 
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JScrollPane scroll;
 	private ModeloTabla modelo;
@@ -39,15 +40,19 @@ public class PanelCrucigramas extends JPanel{
 	private ArrayList<Crucigrama> listaCrucigramasActvos;
 	private String nameUsuario;
 	private MessageDialog m_Dialog;
+	@SuppressWarnings("unused")
 	private CrosswordPanelMio cp;
-	JFrame ventana;
-	JButton btnAnadir;
-	JButton btnBuscar;
-	JTextField txtFind;
-	JScrollPane scrollLista;
-	JList<String> lstCrucigramas;
-	DefaultListModel<String> modeloLista;
+	private JFrame ventana;
+	private JButton btnAnadir;
+	private JButton btnBuscar;
+	private JTextField txtFind;
+	private JList<String> lstCrucigramas;
+	private DefaultListModel<String> modeloLista;
 	
+	/**
+	 * La constructora recibe el nombre del usuario logado para cargar sus crucigramas
+	 * @param name el nombre del usuario logado
+	 */
 	public PanelCrucigramas(String name){
 		this.nameUsuario = name;
 		s_ctrl = new Controller();
@@ -56,8 +61,11 @@ public class PanelCrucigramas extends JPanel{
 		build();
 	}
 		
-	
+	/**
+	 * Funcion para construir el panel
+	 */
 	private void build(){
+		
 		// Crear la tabla con un modelo personalizado
 		modelo = new ModeloTabla();
 		tbCrucigrama = new JTable(modelo);
@@ -72,6 +80,9 @@ public class PanelCrucigramas extends JPanel{
 		botonAnadirCrucigrama();
 	}
 	
+	/**
+	 * Boton para añadir cricigrama
+	 */
 	private void botonAnadirCrucigrama(){
 		btnfindCrucigrama.addActionListener(new ActionListener() {
 		
@@ -85,6 +96,9 @@ public class PanelCrucigramas extends JPanel{
 		});
 	}
 	
+	/**
+	 * Boton para abrir el cricigrama selecionado
+	 */
 	private void botonAbrirCrucigrama(){
 		btnOpenCrucigrama.addActionListener(new ActionListener() {
 		
@@ -105,7 +119,11 @@ public class PanelCrucigramas extends JPanel{
 		});
 	}
 	
+	/**
+	 * Metodo para abrir la ventana de busquedade crucigramas
+	 */
 	private void ventanaBusqueda(){
+		
 		ventana = new JFrame("Load");
 		JPanel centerPanel = new JPanel();
 		modeloLista = new DefaultListModel<String>();
@@ -128,6 +146,10 @@ public class PanelCrucigramas extends JPanel{
 		ventana.setVisible(true);
 		
 	}
+	
+	/**
+	 * Boton para añadir un crucigrama a la lista de crucigramas del usuario logado
+	 */
 	public void anadirCrucigramas(){
 		btnAnadir.addActionListener(new ActionListener() {
 			
@@ -135,7 +157,6 @@ public class PanelCrucigramas extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				String valor = lstCrucigramas.getSelectedValue();
-				//System.out.println("El nombre del valor: "+valor.g);
 				if(valor!=null){
 					String parts[] = valor.split("   ");
 					String titulo = parts[3];
@@ -148,6 +169,9 @@ public class PanelCrucigramas extends JPanel{
 		});
 	}
 	
+	/**
+	 * Boton para buscar los crucigramas
+	 */
 	public void findCrucigramas(){
 		btnBuscar.addActionListener(new ActionListener() {
 			
@@ -160,6 +184,9 @@ public class PanelCrucigramas extends JPanel{
 		});
 	}
 	
+	/**
+	 * Metodo para refrescar laa lista de los crucigramas buscados
+	 */
 	public void refresh(){
 		if(listaCrucigramasFiltrados == null){
 			String programLista[] = new String[listaCrucigramas.size()];
@@ -187,19 +214,23 @@ public class PanelCrucigramas extends JPanel{
 		}
 	}
 	
+	/**
+	 * metodo para refrescar la lista de los crucigramas del usuario logado
+	 */
 	void refreshView() {
 		modelo.refresh();
 	}
 	
+	
 	private class ModeloTabla extends AbstractTableModel {
 			
 	
-			private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = 1L;
 			
-			String[] colNames = { "Titulo", "Fecha" };
+		String[] colNames = { "Titulo", "Fecha" };
 			
-			/**
-			 * Constructora que llama al metodo refrescar
+		/**
+    	 * Constructora que llama al metodo refrescar
 		 */
 		ModeloTabla() {
 			refresh();
